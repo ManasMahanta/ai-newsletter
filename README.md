@@ -1,4 +1,4 @@
-# The AI Brief — newsletter website
+# Signal & Noise — newsletter website
 
 A subscriber-growth-focused website for an AI-advancements newsletter. Built with Next.js
 (App Router) + Tailwind CSS; issues are MDX files; email delivery via Buttondown.

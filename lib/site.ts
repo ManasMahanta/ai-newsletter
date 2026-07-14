@@ -1,9 +1,9 @@
 export const site = {
-  name: "The AI Brief",
-  tagline: "The week's AI advancements, explained in 5 minutes",
+  name: "Signal & Noise",
+  tagline: "The signal in this week's AI noise",
   description:
-    "A weekly newsletter on AI advancements — from research papers to boardroom impact. Written for engineers, founders, and the tech-curious.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://ai-brief.example.com",
+    "Signal & Noise is a weekly newsletter that separates real AI advancements from the hype — from research papers to boardroom impact. Written for engineers, founders, and the tech-curious.",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://signal-noise.example.com",
   author: "Manas Mahanta",
   cadence: "Every Friday",
 };
