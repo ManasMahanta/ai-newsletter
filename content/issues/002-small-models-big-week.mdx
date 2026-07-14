@@ -1,0 +1,45 @@
+---
+title: "Issue #2: Small models, big week"
+date: "2026-07-03"
+summary: "Why distilled small models are eating the mid-market, a paper on when retrieval beats fine-tuning, and the EU's compliance clock starts ticking."
+tags: [models, research, policy]
+featured: true
+---
+
+## TL;DR
+
+- Distilled small models now handle a large share of production workloads — the "one big model for everything" era is over.
+- New research sharpens the retrieval-vs-fine-tuning decision: retrieval wins when knowledge changes faster than you can retrain.
+- EU AI Act obligations for general-purpose models are phasing in; if you ship AI features into Europe, your documentation burden is now real.
+
+## The Big Story: the mid-market belongs to small models
+
+The most consequential trend of the past quarter isn't a frontier release — it's distillation. Teams are routinely taking a frontier model's behavior on *their* task distribution and compressing it into a model that's an order of magnitude cheaper to serve.
+
+**For builders:** the winning architecture is a router: cheap model by default, escalate to the frontier model on uncertainty. If you're not measuring your escalation rate, you're either overspending or silently degrading quality.
+
+**For businesses:** this collapses the cost objection to AI features. The question for your roadmap is no longer "can we afford to add AI here?" but "which of our workflows have enough volume to justify a distilled specialist?"
+
+## Research Radar
+
+**Retrieval vs. fine-tuning.** A useful line of recent work compares injecting knowledge via retrieval against baking it in with fine-tuning. The pattern: fine-tuning wins for *style and format*, retrieval wins for *facts that change*. The "so what": stop fine-tuning on your docs; index them. Fine-tune only when you need the model to *behave* differently, not *know* differently.
+
+## Tool of the Week
+
+**Local inference runtimes.** Running a capable open-weight model on a laptop is now a 10-minute setup. Even if you'd never ship it, keeping a local model around changes how you prototype: zero marginal cost makes you experiment more.
+
+## The Business Angle
+
+The EU AI Act's general-purpose AI obligations are moving from paper to practice, and the first enforcement questions are about documentation: training-data summaries, capability evaluations, incident reporting. US firms shipping into Europe are discovering compliance is mostly *engineering discipline* — provenance, evals, logging — which well-run teams already have.
+
+## Lightning Round
+
+- Synthetic data pipelines are now standard for domain adaptation — quality filtering is the differentiator.
+- Embedding models keep improving quietly; if yours is more than a year old, re-benchmark your retrieval stack.
+- On-device AI is becoming a product requirement in privacy-sensitive verticals, not a nice-to-have.
+- GPU spot pricing volatility has calmed; committed-use discounts are worth re-negotiating.
+- Agent-to-agent protocols are consolidating — interoperability is the next platform battle.
+
+## One Tip
+
+When evaluating a model swap, build a 50-example eval set from *your real traffic* before you look at any public benchmark. An afternoon of labeling beats a week of leaderboard archaeology, and it's reusable for every future swap.

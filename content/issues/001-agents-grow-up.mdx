@@ -1,0 +1,45 @@
+---
+title: "Issue #1: AI agents grow up"
+date: "2026-06-26"
+summary: "Agentic coding tools cross from demo to daily driver, a hard look at what benchmarks still measure, and one prompt pattern that makes any assistant more reliable."
+tags: [models, tools, business]
+featured: true
+---
+
+## TL;DR
+
+- Agentic coding assistants have quietly crossed the line from "impressive demo" to "daily driver" — the interesting shift is in *how teams supervise them*, not raw capability.
+- Benchmark saturation is now the norm at the frontier; evaluation is moving to long-horizon, economically grounded tasks.
+- If you adopt one habit this week: give your AI assistant an explicit verification step. Details in One Tip below.
+
+## The Big Story: agents moved from demos to production
+
+For two years, "AI agents" mostly meant conference demos. That changed. The current generation of coding and workflow agents can hold multi-hour tasks — refactors, migrations, incident triage — with checkpoints instead of hand-holding.
+
+**For builders:** the design pattern that won is *supervised autonomy*: agents work in sandboxes, propose diffs, and escalate on ambiguity. If you're building agentic features, invest in the review surface (diffs, traces, rollbacks) — that's where trust is earned, not in the model call.
+
+**For businesses:** the unit of adoption is shifting from "seats with a chat box" to "tasks delegated per week." That's measurable, which means the ROI conversation is finally getting concrete. Start instrumenting *task completion*, not usage minutes.
+
+## Research Radar
+
+**Long-horizon evaluation.** A wave of recent work argues that static benchmarks have stopped discriminating between frontier models, and proposes measuring models on *time horizon* — how long a task a model can complete at a given reliability level. The "so what": when you compare vendors, ask for task-length reliability curves, not leaderboard deltas.
+
+## Tool of the Week
+
+**Terminal-native agent CLIs.** If you haven't tried driving an agent from your terminal against a real repo, do it this week on a low-stakes task: a dependency upgrade with a green test suite as the finish line. It recalibrates your intuition for what delegation feels like faster than any blog post.
+
+## The Business Angle
+
+Enterprise AI budgets are consolidating: fewer pilots, bigger commitments to platforms that show audit trails and cost controls. Procurement teams now routinely ask about token-level cost attribution and rollback stories. If you sell AI features, those two slides matter more than your benchmark chart.
+
+## Lightning Round
+
+- Open-weight models keep closing the gap on coding tasks — the frontier premium is increasingly about reliability, not peak capability.
+- Context windows are no longer the bottleneck for most workflows; *context discipline* (what you feed in) is.
+- Inference prices continue their steady decline — re-run the math on features you shelved as "too expensive" last year.
+- Multi-agent orchestration frameworks are converging on the same primitives: gateways, allowlisted tools, and circuit breakers.
+- Voice interfaces are having a quiet resurgence inside internal enterprise tools.
+
+## One Tip
+
+Add a verification clause to your prompts: *"Before giving your final answer, check it against the original constraints and list any that aren't satisfied."* It costs one paragraph and catches a surprising fraction of confident mistakes — in chat and in agent pipelines alike.

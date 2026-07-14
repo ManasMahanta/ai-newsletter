@@ -1,0 +1,45 @@
+---
+title: "Issue #3: Context is the product"
+date: "2026-07-10"
+summary: "Memory becomes the moat, a research thread on why models forget instructions mid-task, and the one-page AI usage policy every team should have."
+tags: [research, tools, business]
+featured: true
+---
+
+## TL;DR
+
+- The competitive frontier is shifting from model quality to *context quality*: memory, retrieval, and knowing what to show the model.
+- New research explains instruction drift in long tasks — and the fixes are architectural, not prompt hacks.
+- Every team needs a one-page AI usage policy. A template is in One Tip.
+
+## The Big Story: your context pipeline is the moat
+
+Models are converging; context isn't. Two products calling the same API can feel a generation apart, and the difference is what they put in the window: user history, domain data, tool results, and — increasingly — persistent memory that survives across sessions.
+
+**For builders:** treat context assembly as a ranked retrieval problem with a budget, not string concatenation. Log exactly what went into the window for every request; when quality regresses, that log is the only way to debug it. And treat memory as untrusted input — stored facts should never be able to override your system instructions.
+
+**For businesses:** this is why "we'll just switch models later" is a sound strategy but "we'll just add AI later" isn't. The durable asset is your proprietary context — structured domain data and feedback loops. Model choice is a config value; the context pipeline is the product.
+
+## Research Radar
+
+**Instruction drift in long-horizon tasks.** Several recent papers examine why models gradually deprioritize early instructions during long agentic runs. The emerging consensus: it's a context-management failure more than a model failure — restating constraints at decision points substantially reduces drift. The "so what": if your agent misbehaves late in a task, fix your scaffold's constraint re-injection before blaming the model.
+
+## Tool of the Week
+
+**Trace viewers for LLM pipelines.** Whatever stack you use, adopt a tool that shows the full request tree — prompts, tool calls, latencies, tokens — per user request. Teams consistently report that their first week with real traces finds a "we had no idea it was doing that" bug.
+
+## The Business Angle
+
+AI-native startups are increasingly winning deals against incumbents' bolt-on features, and the pattern is consistent: they win on *workflow depth*, not model access. Incumbent advantage (distribution, data) still matters, but only when the data is actually wired into the product's context pipeline — which is exactly the work bolt-on efforts skip.
+
+## Lightning Round
+
+- Long-term memory features are appearing across major assistants — portability of that memory is the next lock-in debate.
+- Evaluation startups are consolidating; expect your observability and eval vendors to merge into one bill.
+- Prompt injection remains unsolved; the mitigations that work are privilege separation and human gates on high-risk actions.
+- Multimodal embedding search (text + image + audio in one index) is quietly becoming table stakes.
+- The "AI engineer" title is standardizing: less model training, more systems integration and evals.
+
+## One Tip
+
+Write a one-page AI usage policy for your team: what data may be pasted into which tools, which outputs need human review before shipping, and who owns exceptions. Three headings, one page, reviewed quarterly. Most AI incidents at small companies trace back to nobody having written this down.

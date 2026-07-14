@@ -1,0 +1,26 @@
+import Link from "next/link";
+import { site } from "@/lib/site";
+
+export default function Footer() {
+  return (
+    <footer className="mt-auto border-t border-zinc-200 dark:border-zinc-800">
+      <div className="mx-auto flex max-w-4xl flex-col gap-3 px-5 py-8 text-sm text-zinc-500 sm:flex-row sm:items-center sm:justify-between dark:text-zinc-400">
+        <p>
+          © {new Date().getFullYear()} {site.name}. {site.cadence.toLowerCase()},
+          free.
+        </p>
+        <nav className="flex gap-4">
+          <Link href="/issues" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+            Archive
+          </Link>
+          <Link href="/rss.xml" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+            RSS
+          </Link>
+          <Link href="/privacy" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+            Privacy
+          </Link>
+        </nav>
+      </div>
+    </footer>
+  );
+}
