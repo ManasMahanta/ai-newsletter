@@ -157,8 +157,45 @@ export default function HomePage() {
         <PapersFeed limit={4} />
       </LiveScene>
 
+      <section className="relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-indigo-50 p-7 dark:border-amber-500/30 dark:from-amber-500/10 dark:via-zinc-950 dark:to-indigo-500/10">
+        <div className="glow-orb -right-12 -top-16 h-48 w-48 bg-amber-400/20 dark:bg-amber-400/10" />
+        <Reveal className="relative">
+          <SceneLabel>04 · Paper Playground</SceneLabel>
+          <div className="mt-3 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-2xl">
+              <h2 className="text-2xl font-bold tracking-tight">
+                Research doesn&apos;t have to feel like homework.
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+                Pick a trending AI paper, understand its big idea in plain English,
+                then turn it into a portfolio-ready project you can actually build.
+              </p>
+            </div>
+            <Link
+              href="/radar#paper-playground"
+              className="shrink-0 rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-semibold text-amber-950 transition hover:bg-amber-400"
+            >
+              Explore Paper Playground →
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            {[
+              ["01", "Explain simply", "A kid-friendly guide to the paper's core idea."],
+              ["02", "Choose your level", "Scope the learning project for Starter, Intermediate, or Advanced."],
+              ["03", "Build your proof", "Get an MVP plan, portfolio bullet, and interview prompts."],
+            ].map(([number, title, body]) => (
+              <div key={number} className="rounded-xl border border-amber-200/80 bg-white/65 p-4 dark:border-amber-500/20 dark:bg-zinc-950/55">
+                <p className="font-mono text-xs font-semibold text-amber-700 dark:text-amber-300">{number}</p>
+                <h3 className="mt-2 font-semibold">{title}</h3>
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{body}</p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+      </section>
+
       <LiveScene
-        scene="04 · The toolbox"
+        scene="05 · The toolbox"
         title="Rising open-source tools"
         blurb="AI repos created in the last 30 days, ranked by stars."
         radarAnchor="tools"
@@ -171,7 +208,7 @@ export default function HomePage() {
         <Reveal>
           <div className="flex items-baseline justify-between gap-4">
             <div>
-              <SceneLabel>05 · The agents</SceneLabel>
+              <SceneLabel>06 · The agents</SceneLabel>
               <h2 className="mt-3 text-2xl font-bold tracking-tight">
                 Agentic AI
               </h2>
@@ -196,7 +233,7 @@ export default function HomePage() {
       </section>
 
       <LiveScene
-        scene="06 · The models"
+        scene="07 · The models"
         title="Hot models"
         blurb="What's trending on the Hugging Face Hub right now."
         radarAnchor="models"
@@ -205,7 +242,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="07 · The launchpad"
+        scene="08 · The launchpad"
         title="Fresh launches"
         blurb="AI projects shown on Hacker News in the past two weeks."
         radarAnchor="launches"
@@ -214,7 +251,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="08 · The conversation"
+        scene="09 · The conversation"
         title="What everyone's arguing about"
         blurb="Top AI stories on Hacker News from the past week."
         radarAnchor="conversation"
@@ -223,7 +260,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="09 · The labs"
+        scene="10 · The labs"
         title="Lab notes"
         blurb="Fresh posts from OpenAI, Google DeepMind, Google AI, and Hugging Face."
         radarAnchor="labs"
@@ -231,11 +268,11 @@ export default function HomePage() {
         <LabsFeed limit={4} />
       </LiveScene>
 
-      {/* Scene 09 — Lock On: the invitation */}
+      {/* Scene 11 — Lock On: the invitation */}
       <section className="relative overflow-hidden rounded-2xl bg-zinc-100 p-8 dark:bg-zinc-900">
         <div className="glow-orb -top-20 right-0 h-56 w-56 bg-indigo-500/20 dark:bg-indigo-500/15" />
         <Reveal className="relative">
-          <SceneLabel>10 · Lock on</SceneLabel>
+          <SceneLabel>11 · Lock on</SceneLabel>
           <h2 className="mt-3 text-2xl font-bold tracking-tight">
             The signal, delivered — 5 minutes a week
           </h2>
