@@ -5,6 +5,58 @@ import type { QA } from "@/lib/qa/types";
 
 const PAGE = 10;
 
+// Renders answers with light structure: blank-line paragraphs, "- " bullet
+// lists, and **bold** section labels. Plain single-paragraph answers pass
+// through unchanged.
+function Bold({ text }: { text: string }) {
+  const parts = text.split(/\*\*(.+?)\*\*/g);
+  return (
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <strong key={i} className="font-semibold text-zinc-800 dark:text-zinc-200">
+            {part}
+          </strong>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
+}
+
+function AnswerBody({ text }: { text: string }) {
+  const blocks = text.split("\n\n");
+  return (
+    <div className="flex flex-col gap-3">
+      {blocks.map((block, i) =>
+        block.trimStart().startsWith("- ") ? (
+          <ul key={i} className="flex flex-col gap-1.5 pl-1">
+            {block
+              .split("\n")
+              .filter((l) => l.trim())
+              .map((line, j) => (
+                <li key={j} className="flex gap-2.5">
+                  <span
+                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400"
+                    aria-hidden="true"
+                  />
+                  <span>
+                    <Bold text={line.replace(/^\s*- /, "")} />
+                  </span>
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <p key={i}>
+            <Bold text={block} />
+          </p>
+        ),
+      )}
+    </div>
+  );
+}
+
 // Expandable Q&A bank with "show more" pagination and a text filter.
 export default function QABank({ items }: { items: QA[] }) {
   const [visible, setVisible] = useState(PAGE);
@@ -55,7 +107,7 @@ export default function QABank({ items }: { items: QA[] }) {
               </span>
             </summary>
             <div className="border-t border-dashed border-zinc-200 bg-zinc-50/60 px-5 py-4 pl-12 text-sm leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-400">
-              {item.a}
+              <AnswerBody text={item.a} />
             </div>
           </details>
         ))}
