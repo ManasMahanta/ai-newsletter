@@ -93,14 +93,11 @@ function LiveScene({
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-24">
-      {/* Scene 01 — The Noise: chaos behind, one clear promise in front */}
-      <section className="relative -mx-5 flex min-h-[72vh] items-center overflow-hidden px-5">
+      {/* Scene 01 — The Noise: chaos behind, one clear promise in front.
+          No local glows or hard edges — the canvas fades into the site
+          backdrop so the scene reads as part of the same environment. */}
+      <section className="relative -mx-5 flex min-h-[72vh] items-center px-5">
         <SignalCanvas />
-        <div className="glow-orb -top-24 -left-24 h-72 w-72 bg-indigo-500/25 dark:bg-indigo-500/20" />
-        <div
-          className="glow-orb -right-16 bottom-0 h-64 w-64 bg-violet-500/20 dark:bg-violet-500/15"
-          style={{ animationDelay: "-8s" }}
-        />
         <Parallax speed={0.08} className="relative">
           <div className="flex max-w-2xl flex-col items-start gap-5">
             <SceneLabel>01 · The noise</SceneLabel>

@@ -100,6 +100,16 @@ body {
 
 /* --- Cinematic homepage ------------------------------------------------ */
 
+/* Dissolves the hero particle canvas into the site backdrop on all sides,
+   so scene 01 merges with the page instead of ending at a hard boundary. */
+.signal-fade {
+  mask-image: radial-gradient(
+    ellipse 90% 80% at 50% 45%,
+    black 45%,
+    transparent 98%
+  );
+}
+
 /* Scroll reveal: elements start soft and out of focus, then settle into
    place. JS (components/cinematic/Reveal.tsx) toggles .is-visible. */
 .reveal {

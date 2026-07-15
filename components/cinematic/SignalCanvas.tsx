@@ -137,7 +137,7 @@ export default function SignalCanvas() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 h-full w-full"
+      className="signal-fade pointer-events-none absolute inset-0 h-full w-full"
     />
   );
 }
