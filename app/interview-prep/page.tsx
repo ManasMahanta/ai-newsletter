@@ -5,9 +5,11 @@ import RadarCard, { StatPill } from "@/components/radar/RadarCard";
 import { EmptyFeed, SkeletonGrid } from "@/components/radar/Feeds";
 import {
   formatCount,
+  formatShortDate,
   getInterviewRepos,
   getInterviewStories,
 } from "@/lib/radar";
+import { getJobsByLevel, type JobLevel } from "@/lib/jobs";
 import { prepLevels, prepTips } from "@/lib/interview";
 import QABank from "@/components/interview/QABank";
 import type { QA } from "@/lib/qa/types";
@@ -39,6 +41,31 @@ const sections = [
   { id: "resources", label: "Live resources" },
   { id: "hiring", label: "Hiring chatter" },
 ];
+
+async function OpenRolesFeed({ level }: { level: JobLevel }) {
+  const jobs = (await getJobsByLevel())[level];
+  if (jobs.length === 0) return <EmptyFeed />;
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {jobs.map((job) => (
+        <RadarCard
+          key={job.id}
+          href={job.url}
+          title={job.title}
+          description={`${job.company} · ${job.location}`}
+          stats={
+            <>
+              {job.postedAt && (
+                <StatPill>{formatShortDate(job.postedAt)}</StatPill>
+              )}
+              {job.via && <StatPill>via {job.via}</StatPill>}
+            </>
+          }
+        />
+      ))}
+    </div>
+  );
+}
 
 async function InterviewReposFeed() {
   const repos = await getInterviewRepos();
@@ -151,6 +178,18 @@ export default function InterviewPrepPage() {
                   Q&amp;A bank — tap a question for the model answer
                 </h3>
                 <QABank items={banks[l.id] ?? []} bankId={l.id} />
+              </div>
+
+              <div>
+                <h3 className="font-semibold">Open roles right now</h3>
+                <p className="mt-1 mb-3 text-sm text-zinc-500 dark:text-zinc-400">
+                  Live listings matched to this level, pulled from the job
+                  boards of Anthropic, OpenAI, Cohere, Scale AI, and ElevenLabs
+                  plus remote roles via Remotive. Refreshes every few hours.
+                </p>
+                <Suspense fallback={<SkeletonGrid />}>
+                  <OpenRolesFeed level={l.id as JobLevel} />
+                </Suspense>
               </div>
             </section>
           ))}
