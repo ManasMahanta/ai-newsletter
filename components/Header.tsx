@@ -28,6 +28,13 @@ export default function Header() {
             </Link>
           ))}
           <Link
+            href="/search"
+            aria-label="Search"
+            className="text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            <span aria-hidden="true">🔍</span>
+          </Link>
+          <Link
             href="/subscribe"
             className="rounded-lg bg-indigo-600 px-3.5 py-1.5 font-semibold text-white transition hover:bg-indigo-500"
           >
@@ -45,6 +52,9 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
+            <Link href="/search" className="rounded-lg px-3 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-900">
+              Search
+            </Link>
             <Link href="/subscribe" className="mt-1 rounded-lg bg-indigo-600 px-3 py-3 text-center text-sm font-semibold text-white transition hover:bg-indigo-500">
               Subscribe free
             </Link>

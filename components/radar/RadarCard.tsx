@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import CardActions from "@/components/radar/CardActions";
 
 export function StatPill({ children }: { children: ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export default function RadarCard({
   description,
   stats,
   secondaryLink,
+  actions,
 }: {
   href: string;
   title: string;
@@ -22,6 +24,9 @@ export default function RadarCard({
   description?: string;
   stats: ReactNode;
   secondaryLink?: { href: string; label: string };
+  // Personal Signal/Noise + Save controls keyed by href. On by default;
+  // pass actions={false} for compact/decorative cards that shouldn't have them.
+  actions?: boolean;
 }) {
   return (
     <article className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white/65 p-5 transition hover:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950/55 dark:hover:border-indigo-500">
@@ -55,6 +60,7 @@ export default function RadarCard({
             {secondaryLink.label}
           </a>
         )}
+        {actions !== false && <CardActions id={href} title={title} url={href} />}
       </div>
     </article>
   );

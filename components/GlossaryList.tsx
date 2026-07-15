@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { GlossaryTerm } from "@/lib/glossary";
+import Link from "next/link";
+import { slugifyTerm, type GlossaryTerm } from "@/lib/glossary";
 
 // Alphabetical glossary with a live filter and letter jump-nav.
 export default function GlossaryList({ terms }: { terms: GlossaryTerm[] }) {
@@ -64,7 +65,14 @@ export default function GlossaryList({ terms }: { terms: GlossaryTerm[] }) {
           <dl className="mt-3 divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white/65 dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/55">
             {groups.get(letter)!.map((t) => (
               <div key={t.term} className="px-5 py-3.5">
-                <dt className="font-semibold">{t.term}</dt>
+                <dt className="font-semibold">
+                  <Link
+                    href={`/glossary/${slugifyTerm(t.term)}`}
+                    className="hover:text-indigo-600 dark:hover:text-indigo-400"
+                  >
+                    {t.term}
+                  </Link>
+                </dt>
                 <dd className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                   {t.def}
                 </dd>

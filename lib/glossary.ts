@@ -6,6 +6,15 @@ export type GlossaryTerm = {
   def: string;
 };
 
+// URL slug for a term's dedicated page, e.g. "Chain-of-thought (CoT)" → "chain-of-thought".
+export function slugifyTerm(term: string): string {
+  return term
+    .toLowerCase()
+    .replace(/\s*\(.*?\)\s*/g, " ") // drop parenthetical abbreviations
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export const glossary: GlossaryTerm[] = [
   { term: "Agent", def: "An LLM run in a loop with tools: it observes a goal, chooses an action (like calling an API), sees the result, and repeats until done. The autonomy to choose and sequence actions is what separates an agent from a chatbot." },
   { term: "Agentic AI", def: "The branch of AI focused on systems that act — planning multi-step tasks, using tools, and operating with varying levels of autonomy — rather than only answering questions." },
@@ -110,3 +119,22 @@ export const glossary: GlossaryTerm[] = [
   { term: "Stale-while-revalidate", def: "Serving cached content instantly while refreshing it in the background — the caching semantics behind ISR and most 'live' content sites, including this one." },
   { term: "Sycophancy", def: "A model's tendency to agree with the user's stated views or flatter their premise rather than be accurate — a measured, trainable-against failure mode, and a real risk in judge models." },
 ];
+
+export function getGlossaryTerm(slug: string): GlossaryTerm | undefined {
+  return glossary.find((t) => slugifyTerm(t.term) === slug);
+}
+
+// Other terms whose name is mentioned in this term's definition — cheap,
+// meaningful "see also" links. Falls back to nothing if there are no matches.
+export function relatedTerms(term: GlossaryTerm, limit = 6): GlossaryTerm[] {
+  const defLc = term.def.toLowerCase();
+  return glossary
+    .filter((other) => {
+      if (other.term === term.term) return false;
+      // Match the bare term (strip any parenthetical) as a whole word.
+      const bare = other.term.replace(/\s*\(.*?\)\s*/g, "").toLowerCase();
+      if (bare.length < 3) return false;
+      return new RegExp(`\\b${bare.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(defLc);
+    })
+    .slice(0, limit);
+}

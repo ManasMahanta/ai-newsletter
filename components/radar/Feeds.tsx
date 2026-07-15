@@ -16,6 +16,7 @@ import {
   getFreshArxiv,
   getLabPosts,
   getLatestReleases,
+  getMediumAgentPosts,
   getShowHNLaunches,
   getTopStories,
   getTrendingDatasets,
@@ -248,6 +249,28 @@ export async function StoriesFeed({ limit = 8 }: { limit?: number }) {
 
 export async function LabsFeed({ limit = 8 }: { limit?: number }) {
   const posts = await getLabPosts(limit);
+  if (posts.length === 0) return <EmptyFeed />;
+  return (
+    <Grid>
+      {posts.map((p) => (
+        <RadarCard
+          key={p.url}
+          href={p.url}
+          title={p.title}
+          eyebrow={p.source}
+          stats={
+            p.publishedAt ? (
+              <StatPill>{formatShortDate(p.publishedAt)}</StatPill>
+            ) : null
+          }
+        />
+      ))}
+    </Grid>
+  );
+}
+
+export async function MediumAgentFeed({ limit = 9 }: { limit?: number }) {
+  const posts = await getMediumAgentPosts(limit);
   if (posts.length === 0) return <EmptyFeed />;
   return (
     <Grid>

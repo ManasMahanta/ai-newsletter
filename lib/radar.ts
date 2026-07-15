@@ -440,6 +440,46 @@ export async function getLabPosts(limit = 8): Promise<RadarPost[]> {
   return fetchLabPosts(limit);
 }
 
+// Agentic-AI writing on Medium. Medium's public RSS is sorted by recency and
+// doesn't expose clap counts, so this is "latest from these tags", not a true
+// vote ranking. `source` carries the author's byline. Returns [] on failure.
+const MEDIUM_TAGS = ["agentic-ai", "ai-agents", "llm-agents"];
+
+export async function getMediumAgentPosts(limit = 9): Promise<RadarPost[]> {
+  const results = await Promise.allSettled(
+    MEDIUM_TAGS.map(async (tag) => {
+      const xml = await getText(`https://medium.com/feed/tag/${tag}`, 3 * HOUR);
+      return xmlBlocks(xml, "item")
+        .slice(0, 10)
+        .map((item) => {
+          const date = new Date(xmlText(item, "pubDate"));
+          const author = xmlText(item, "dc:creator");
+          return {
+            title: xmlText(item, "title"),
+            source: author || "Medium",
+            url: xmlText(item, "link").split("?")[0],
+            publishedAt: Number.isNaN(date.getTime()) ? "" : date.toISOString(),
+          };
+        })
+        .filter((p) => p.title && p.url);
+    }),
+  );
+
+  const seen = new Set<string>();
+  return results
+    .filter(
+      (r): r is PromiseFulfilledResult<RadarPost[]> => r.status === "fulfilled",
+    )
+    .flatMap((r) => r.value)
+    .filter((p) => {
+      if (seen.has(p.url)) return false;
+      seen.add(p.url);
+      return true;
+    })
+    .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
+    .slice(0, limit);
+}
+
 export function formatShortDate(iso: string): string {
   if (!iso) return "";
   const d = new Date(iso.length === 10 ? `${iso}T00:00:00Z` : iso);

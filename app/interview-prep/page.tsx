@@ -20,6 +20,7 @@ import { leadershipQA } from "@/lib/qa/leadership";
 import { systemDesignQA } from "@/lib/qa/system-design";
 import InterviewCoach from "@/components/interview/InterviewCoach";
 import JobsList from "@/components/interview/JobsList";
+import PrepPlanner from "@/components/interview/PrepPlanner";
 
 const banks: Record<string, QA[]> = {
   entry: entryQA,
@@ -36,6 +37,7 @@ export const metadata: Metadata = {
 
 const sections = [
   { id: "coach", label: "AI coach" },
+  { id: "planner", label: "Prep planner" },
   ...prepLevels.map((l) => ({ id: l.id, label: l.level })),
   { id: "system-design", label: "System design" },
   { id: "tips", label: "Ground rules" },
@@ -127,6 +129,9 @@ export default function InterviewPrepPage() {
         <div className="mt-8 flex flex-col gap-14 lg:mt-0">
           <section id="coach" className="scroll-mt-24 lg:scroll-mt-8">
             <InterviewCoach />
+          </section>
+          <section id="planner" className="scroll-mt-24 lg:scroll-mt-8">
+            <PrepPlanner />
           </section>
           {prepLevels.map((l) => (
             <section

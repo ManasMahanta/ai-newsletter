@@ -10,6 +10,7 @@ import {
   AgentReleasesFeed,
   AgentReposFeed,
   AgentSpacesFeed,
+  MediumAgentFeed,
   SkeletonGrid,
 } from "@/components/radar/Feeds";
 
@@ -27,6 +28,7 @@ const sections = [
   { id: "demos", label: "Try it live" },
   { id: "launches", label: "Launches" },
   { id: "conversation", label: "The conversation" },
+  { id: "reads", label: "Deep reads" },
   { id: "labs", label: "Lab notes" },
 ];
 
@@ -126,6 +128,14 @@ export default function AgentsPage() {
             subtitle="Top Hacker News discussions specifically about AI agents."
           >
             <AgentDiscussionsFeed />
+          </AgentSection>
+
+          <AgentSection
+            id="reads"
+            title="Deep reads on Medium"
+            subtitle="The latest Agentic AI writing from the community (Medium doesn't expose clap counts, so this is newest-first, not vote-ranked)."
+          >
+            <MediumAgentFeed />
           </AgentSection>
 
           <AgentSection

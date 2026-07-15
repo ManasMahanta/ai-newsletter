@@ -15,6 +15,8 @@ import {
   StoriesFeed,
 } from "@/components/radar/Feeds";
 import PaperPlaygroundFeed from "@/components/radar/PaperPlaygroundFeed";
+import WeeklyQuiz from "@/components/radar/WeeklyQuiz";
+import { getWeeklyQuiz } from "@/lib/weekly-quiz";
 
 export const metadata: Metadata = {
   title: "Radar",
@@ -23,6 +25,7 @@ export const metadata: Metadata = {
 };
 
 const sections = [
+  { id: "quiz", label: "Weekly quiz" },
   { id: "papers", label: "Trending papers" },
   { id: "paper-playground", label: "Paper Playground" },
   { id: "arxiv", label: "Fresh from arXiv" },
@@ -60,6 +63,24 @@ function RadarSection({
   );
 }
 
+// Self-hiding: renders nothing (not even a header) when GLM is unconfigured
+// or quiz generation returns no questions.
+async function QuizSection() {
+  const questions = await getWeeklyQuiz();
+  if (questions.length === 0) return null;
+  return (
+    <section id="quiz" className="flex scroll-mt-24 flex-col gap-6 lg:scroll-mt-8">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">This week in AI — quiz</h2>
+        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          Six questions from this week&apos;s real feeds. Did you keep up?
+        </p>
+      </div>
+      <WeeklyQuiz questions={questions} />
+    </section>
+  );
+}
+
 export default function RadarPage() {
   return (
     <div className="lg:relative lg:left-1/2 lg:w-[min(72rem,calc(100vw-4rem))] lg:-translate-x-1/2">
@@ -78,6 +99,10 @@ export default function RadarPage() {
         </aside>
 
         <div className="mt-8 flex flex-col gap-14 lg:mt-0">
+          <Suspense fallback={null}>
+            <QuizSection />
+          </Suspense>
+
           <RadarSection
             id="papers"
             title="Trending papers"

@@ -19,6 +19,12 @@ export default function Footer() {
           <Link href="/models" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Models
           </Link>
+          <Link href="/search" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
+            Search
+          </Link>
+          <Link href="/saved" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
+            Saved
+          </Link>
           <Link href="/start-here" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Start Here
           </Link>

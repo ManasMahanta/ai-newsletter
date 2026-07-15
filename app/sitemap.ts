@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllIssues, getAllTags } from "@/lib/issues";
+import { glossary, slugifyTerm } from "@/lib/glossary";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/interview-prep",
     "/glossary",
     "/models",
+    "/search",
     "/subscribe",
     "/start-here",
     "/about",
@@ -19,6 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${site.url}${path}`,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.6,
+  }));
+
+  const glossaryPages = glossary.map((t) => ({
+    url: `${site.url}/glossary/${slugifyTerm(t.term)}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.5,
   }));
 
   const issuePages = getAllIssues().map((issue) => ({
@@ -34,5 +42,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   }));
 
-  return [...staticPages, ...issuePages, ...topicPages];
+  return [...staticPages, ...glossaryPages, ...issuePages, ...topicPages];
 }

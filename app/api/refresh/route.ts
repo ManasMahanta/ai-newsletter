@@ -25,6 +25,7 @@ export async function GET(request: Request) {
   revalidatePath("/agents");
   revalidatePath("/interview-prep");
   revalidateTag("daily-brief", "max");
+  revalidateTag("weekly-quiz", "max");
 
   // Kick off a fresh Naukri scrape when the last one is stale (self-throttled
   // inside triggerNaukriScrape to stay within Apify's free credit).
