@@ -24,7 +24,7 @@ export default function RadarCard({
   secondaryLink?: { href: string; label: string };
 }) {
   return (
-    <article className="flex flex-col gap-2 rounded-xl border border-zinc-200 p-5 transition hover:border-indigo-400 dark:border-zinc-800 dark:hover:border-indigo-500">
+    <article className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white/65 p-5 transition hover:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950/55 dark:hover:border-indigo-500">
       {eyebrow && (
         <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
           {eyebrow}

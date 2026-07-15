@@ -80,7 +80,7 @@ export default async function Highlights() {
   if (items.length === 0) return null;
 
   return (
-    <ol className="divide-y divide-zinc-200 rounded-2xl border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+    <ol className="divide-y divide-zinc-200 rounded-2xl border border-zinc-200 bg-white/65 dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-950/55">
       {items.map((h) => (
         <li key={h.tag} className="flex flex-col gap-1 px-5 py-3.5 sm:flex-row sm:items-baseline sm:gap-4">
           <span className="w-28 shrink-0 font-mono text-xs font-semibold uppercase tracking-wide text-indigo-500 dark:text-indigo-400">

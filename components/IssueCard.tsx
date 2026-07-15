@@ -5,7 +5,7 @@ import TagBadge from "@/components/TagBadge";
 
 export default function IssueCard({ issue }: { issue: IssueMeta }) {
   return (
-    <article className="rounded-xl border border-zinc-200 p-5 transition hover:border-indigo-400 dark:border-zinc-800 dark:hover:border-indigo-500">
+    <article className="rounded-xl border border-zinc-200 bg-white/65 p-5 transition hover:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950/55 dark:hover:border-indigo-500">
       <p className="text-xs text-zinc-500 dark:text-zinc-400">
         {formatDate(issue.date)}
       </p>
