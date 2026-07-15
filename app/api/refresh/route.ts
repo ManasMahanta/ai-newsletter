@@ -22,6 +22,7 @@ export async function GET(request: Request) {
   revalidatePath("/");
   revalidatePath("/radar");
   revalidatePath("/agents");
+  revalidatePath("/interview-prep");
 
   return NextResponse.json({ revalidated: true, at: new Date().toISOString() });
 }

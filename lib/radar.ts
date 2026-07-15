@@ -523,3 +523,19 @@ export async function getAgentDiscussions(limit = 8): Promise<RadarStory[]> {
 export async function getAgentLabPosts(limit = 8): Promise<RadarPost[]> {
   return fetchLabPosts(limit, (title) => /agent/i.test(title));
 }
+
+// --- Interview prep: live feeds for the /interview-prep page -------------
+
+/** Most-starred LLM/GenAI interview-prep repos on GitHub. */
+export async function getInterviewRepos(limit = 8): Promise<RadarRepo[]> {
+  return fetchRepos("llm interview", limit);
+}
+
+/** Recent HN discussions about AI hiring and interviews. */
+export async function getInterviewStories(limit = 8): Promise<RadarStory[]> {
+  return fetchTopStories("AI interview", {
+    pointsAbove: 20,
+    daysBack: 90,
+    limit,
+  });
+}

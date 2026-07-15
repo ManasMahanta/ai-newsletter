@@ -6,7 +6,7 @@ const nav = [
   { href: "/issues", label: "Issues" },
   { href: "/radar", label: "Radar" },
   { href: "/agents", label: "Agentic AI" },
-  { href: "/start-here", label: "Start Here" },
+  { href: "/interview-prep", label: "Interview Prep" },
   { href: "/about", label: "About" },
 ];
 
