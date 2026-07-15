@@ -24,8 +24,8 @@ export default function RadarCard({
   description?: string;
   stats: ReactNode;
   secondaryLink?: { href: string; label: string };
-  // Personal Signal/Noise + Save controls keyed by href. On by default;
-  // pass actions={false} for compact/decorative cards that shouldn't have them.
+  // Personal Save bookmark control keyed by href. On by default; pass
+  // actions={false} for compact/decorative cards that shouldn't have it.
   actions?: boolean;
 }) {
   return (
