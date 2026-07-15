@@ -1,0 +1,36 @@
+---
+title: 'Issue #N: The Blind Spots of AI'
+date: "2026-07-15"
+summary: "AI models excel at benchmarks but struggle with basic human reasoning tasks, while agentic frameworks evolve rapidly."
+tags: ["models", "research", "tools"]
+featured: false
+
+## TL;DR
+- Modern AI models fail on tasks humans find trivial, like drawing a dog with five legs, as revealed by a new benchmark.
+- Microsoft released Flint, a visualization language designed specifically for AI agents to create charts and graphs.
+- Open-source models continue to gain traction, with a Claude-compatible model seeing over 2 million downloads.
+
+## The Big Story
+Blind-Spots-Bench reveals a critical gap in AI capabilities: models that achieve high scores on standard benchmarks fail on tasks humans find almost trivial, such as manipulating strings or drawing a dog with five legs. This benchmark exposes fundamental limitations in multimodal models that aren't apparent through current evaluation methods. For builders: this highlights the need for more comprehensive testing that includes edge cases and basic reasoning tasks, not just established benchmarks. For business: organizations relying on AI for critical tasks should implement additional validation beyond standard metrics to ensure reliability in real-world scenarios.
+
+## Research Radar
+**Blind-Spots-Bench: Evaluating Blind Spots in Multimodal Models**  
+This benchmark reveals that high-performing AI models fail on basic reasoning tasks that humans find trivial, such as drawing a dog with five legs or manipulating strings. The researchers created a dataset of these "blind spot" tasks to expose limitations in current evaluation methods.  
+*So what:* This work challenges the notion that top-performing models are truly capable, suggesting we need more comprehensive testing that includes edge cases and basic reasoning.
+
+**SynthDocBench: Controlled Benchmark for Long-Context Visual Document Understanding**  
+Vision language models perform well on document understanding benchmarks, but real-world documents combine multiple factors like layout, text density, and structure that current tests don't capture. This new benchmark provides a more controlled evaluation of how models handle complex documents.  
+*So what:* For developers working with document AI, this benchmark offers a more realistic assessment of model performance and identifies areas for improvement in document processing.
+
+## Tool of the Week
+elder-plinius/T3MP3ST is an autonomous red teaming platform that functions as a multi-agent offensive-security meta-harness. It allows security researchers and developers to test AI systems by simulating sophisticated attacks. The platform uses multiple agents working together to identify vulnerabilities that single-agent approaches might miss. Why it matters: As AI systems become more prevalent and powerful, automated security testing tools like T3MP3ST are essential for identifying potential exploits before malicious actors do.
+
+## Lightning Round
+- Microsoft released Flint, a visualization language specifically designed for AI agents to create charts and graphs [https://microsoft.github.io/flint-chart/#/]
+- A reverse engineered Windows Copilot API allows access to GPT-4 and GPT-5 models without API keys or billing [https://github.com/sums001/Windows-Copilot-API]
+- Open-source model Qwythos-9B-Claude-Mythos-5-1M-GGUF has seen over 2 million downloads, indicating strong demand for Claude-compatible alternatives [https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF]
+- Google DeepMind launched ATL Saathi, an initiative to empower India's next generation of innovators with AI tools and training [https://deepmind.google/blog/empowering-indias-next-generation-of-innovators-with-atl-saathi/]
+- Recall gives Claude Code durable memory that works entirely offline, eliminating the need to re-explain your project every session [https://github.com/raiyanyahya/recall]
+
+## One Tip
+When evaluating AI models for document processing, use benchmarks like SynthDocBench that combine multiple factors (layout, text density, structure) rather than relying solely on standard document QA benchmarks. This will give you a more realistic assessment of how the model will perform on real-world documents with complex visual-textual relationships.
