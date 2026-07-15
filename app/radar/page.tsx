@@ -14,6 +14,7 @@ import {
   SpacesFeed,
   StoriesFeed,
 } from "@/components/radar/Feeds";
+import PaperPlaygroundFeed from "@/components/radar/PaperPlaygroundFeed";
 
 export const metadata: Metadata = {
   title: "Radar",
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
 
 const sections = [
   { id: "papers", label: "Trending papers" },
+  { id: "paper-playground", label: "Paper Playground" },
   { id: "arxiv", label: "Fresh from arXiv" },
   { id: "tools", label: "Rising tools" },
   { id: "releases", label: "Release watch" },
@@ -82,6 +84,14 @@ export default function RadarPage() {
             subtitle="Community-upvoted research from Hugging Face Daily Papers."
           >
             <PapersFeed />
+          </RadarSection>
+
+          <RadarSection
+            id="paper-playground"
+            title="Paper Playground"
+            subtitle="A gentle, kid-friendly way to understand the big idea behind a trending paper."
+          >
+            <PaperPlaygroundFeed />
           </RadarSection>
 
           <RadarSection

@@ -16,8 +16,8 @@ subscriptions, copy `.env.example` to `.env.local` and set `BUTTONDOWN_API_KEY`
 (from https://buttondown.com/settings/api). Set `NEXT_PUBLIC_SITE_URL` to your real domain
 before deploying — it drives SEO metadata, the sitemap, and the RSS feed.
 
-The Interview Prep page includes an AI mock-interview coach, and the homepage carries a
-daily AI-written brief — both powered by Z.ai's GLM models. Set `ZAI_API_KEY` in
+The Interview Prep page includes an AI mock-interview coach, the Radar includes a
+paper explainer, and the homepage carries a daily AI-written brief — all powered by Z.ai's GLM models. Set `ZAI_API_KEY` in
 `.env.local` to enable them; optionally set `ZAI_MODEL` (defaults to `glm-4.5`;
 `glm-4.5-flash` runs on Z.ai's free tier). Keys are used only in server-side routes.
 
