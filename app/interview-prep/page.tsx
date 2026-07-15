@@ -16,6 +16,7 @@ import { midQA } from "@/lib/qa/mid";
 import { seniorQA } from "@/lib/qa/senior";
 import { leadershipQA } from "@/lib/qa/leadership";
 import { systemDesignQA } from "@/lib/qa/system-design";
+import InterviewCoach from "@/components/interview/InterviewCoach";
 
 const banks: Record<string, QA[]> = {
   entry: entryQA,
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
 };
 
 const sections = [
+  { id: "coach", label: "AI coach" },
   ...prepLevels.map((l) => ({ id: l.id, label: l.level })),
   { id: "system-design", label: "System design" },
   { id: "tips", label: "Ground rules" },
@@ -101,6 +103,9 @@ export default function InterviewPrepPage() {
         </aside>
 
         <div className="mt-8 flex flex-col gap-14 lg:mt-0">
+          <section id="coach" className="scroll-mt-24 lg:scroll-mt-8">
+            <InterviewCoach />
+          </section>
           {prepLevels.map((l) => (
             <section
               key={l.id}
@@ -145,7 +150,7 @@ export default function InterviewPrepPage() {
                 <h3 className="mb-3 font-semibold">
                   Q&amp;A bank — tap a question for the model answer
                 </h3>
-                <QABank items={banks[l.id] ?? []} />
+                <QABank items={banks[l.id] ?? []} bankId={l.id} />
               </div>
             </section>
           ))}
@@ -165,7 +170,7 @@ export default function InterviewPrepPage() {
                 get.
               </p>
             </div>
-            <QABank items={systemDesignQA} />
+            <QABank items={systemDesignQA} bankId="system-design" />
           </section>
 
           <section

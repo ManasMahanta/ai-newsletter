@@ -16,6 +16,10 @@ subscriptions, copy `.env.example` to `.env.local` and set `BUTTONDOWN_API_KEY`
 (from https://buttondown.com/settings/api). Set `NEXT_PUBLIC_SITE_URL` to your real domain
 before deploying — it drives SEO metadata, the sitemap, and the RSS feed.
 
+The Interview Prep page includes an AI mock-interview coach. Set `OPENAI_API_KEY` in
+`.env.local` to enable it; optionally set `OPENAI_INTERVIEW_COACH_MODEL` to use a
+different model. The key is used only by the server-side coach route.
+
 ## Publishing an issue
 
 Add a file to `content/issues/`:

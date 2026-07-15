@@ -9,6 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/radar",
     "/agents",
     "/interview-prep",
+    "/glossary",
+    "/models",
     "/subscribe",
     "/start-here",
     "/about",

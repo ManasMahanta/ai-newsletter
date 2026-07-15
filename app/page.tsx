@@ -5,6 +5,7 @@ import SignalCanvas from "@/components/cinematic/SignalCanvas";
 import { Parallax, Reveal, SceneLabel } from "@/components/cinematic/Motion";
 import RadarCard, { StatPill } from "@/components/radar/RadarCard";
 import Highlights from "@/components/radar/Highlights";
+import DailyBrief from "@/components/radar/DailyBrief";
 import {
   LabsFeed,
   LaunchesFeed,
@@ -132,7 +133,10 @@ export default function HomePage() {
             auto-compiled, refreshed all day.
           </p>
         </Reveal>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-col gap-4">
+          <Suspense fallback={null}>
+            <DailyBrief />
+          </Suspense>
           <Suspense
             fallback={
               <div className="h-96 animate-pulse rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900" />

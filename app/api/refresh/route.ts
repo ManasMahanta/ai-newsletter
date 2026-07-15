@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 // Marks the homepage and radar's cached data stale so the next visitor gets
@@ -23,6 +23,7 @@ export async function GET(request: Request) {
   revalidatePath("/radar");
   revalidatePath("/agents");
   revalidatePath("/interview-prep");
+  revalidateTag("daily-brief", "max");
 
   return NextResponse.json({ revalidated: true, at: new Date().toISOString() });
 }
