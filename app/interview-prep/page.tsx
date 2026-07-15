@@ -19,6 +19,7 @@ import { seniorQA } from "@/lib/qa/senior";
 import { leadershipQA } from "@/lib/qa/leadership";
 import { systemDesignQA } from "@/lib/qa/system-design";
 import InterviewCoach from "@/components/interview/InterviewCoach";
+import JobsList from "@/components/interview/JobsList";
 
 const banks: Record<string, QA[]> = {
   entry: entryQA,
@@ -46,24 +47,18 @@ async function OpenRolesFeed({ level }: { level: JobLevel }) {
   const jobs = (await getJobsByLevel())[level];
   if (jobs.length === 0) return <EmptyFeed />;
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      {jobs.map((job) => (
-        <RadarCard
-          key={job.id}
-          href={job.url}
-          title={job.title}
-          description={`${job.company} · ${job.location}`}
-          stats={
-            <>
-              {job.postedAt && (
-                <StatPill>{formatShortDate(job.postedAt)}</StatPill>
-              )}
-              {job.via && <StatPill>via {job.via}</StatPill>}
-            </>
-          }
-        />
-      ))}
-    </div>
+    <JobsList
+      jobs={jobs.map((job) => ({
+        id: job.id,
+        title: job.title,
+        company: job.company,
+        location: job.location,
+        url: job.url,
+        regions: job.regions,
+        posted: job.postedAt ? formatShortDate(job.postedAt) : undefined,
+        via: job.via,
+      }))}
+    />
   );
 }
 
@@ -183,9 +178,11 @@ export default function InterviewPrepPage() {
               <div>
                 <h3 className="font-semibold">Open roles right now</h3>
                 <p className="mt-1 mb-3 text-sm text-zinc-500 dark:text-zinc-400">
-                  Live listings matched to this level, pulled from the job
-                  boards of Anthropic, OpenAI, Cohere, Scale AI, and ElevenLabs
-                  plus remote roles via Remotive. Refreshes every few hours.
+                  Live listings matched to this level — pick a location. US
+                  roles come from the boards of Anthropic, OpenAI, Cohere,
+                  Scale AI, and ElevenLabs; India roles from Sarvam AI, Turing,
+                  and the labs&apos; India offices; plus remote roles via
+                  Remotive. Refreshes every few hours.
                 </p>
                 <Suspense fallback={<SkeletonGrid />}>
                   <OpenRolesFeed level={l.id as JobLevel} />
