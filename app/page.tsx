@@ -4,6 +4,7 @@ import SignupForm from "@/components/SignupForm";
 import SignalCanvas from "@/components/cinematic/SignalCanvas";
 import { Parallax, Reveal, SceneLabel } from "@/components/cinematic/Motion";
 import RadarCard, { StatPill } from "@/components/radar/RadarCard";
+import Highlights from "@/components/radar/Highlights";
 import {
   LabsFeed,
   LaunchesFeed,
@@ -118,9 +119,36 @@ export default function HomePage() {
         </Parallax>
       </section>
 
-      {/* Scenes 02–08 — all live data, refreshed automatically */}
+      {/* Scene 02 — the digest: #1 item from every feed, one glance */}
+      <section>
+        <Reveal>
+          <div className="flex items-baseline justify-between gap-4">
+            <div>
+              <SceneLabel>02 · The brief</SceneLabel>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight">
+                Highlights
+              </h2>
+            </div>
+          </div>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            The single strongest signal from each feed right now —
+            auto-compiled, refreshed all day.
+          </p>
+        </Reveal>
+        <div className="mt-6">
+          <Suspense
+            fallback={
+              <div className="h-96 animate-pulse rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900" />
+            }
+          >
+            <Highlights />
+          </Suspense>
+        </div>
+      </section>
+
+      {/* Scenes 03–09 — all live data, refreshed automatically */}
       <LiveScene
-        scene="02 · The research"
+        scene="03 · The research"
         title="Trending papers"
         blurb="What researchers are upvoting right now, via Hugging Face Daily Papers."
         radarAnchor="papers"
@@ -129,7 +157,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="03 · The toolbox"
+        scene="04 · The toolbox"
         title="Rising open-source tools"
         blurb="AI repos created in the last 30 days, ranked by stars."
         radarAnchor="tools"
@@ -142,7 +170,7 @@ export default function HomePage() {
         <Reveal>
           <div className="flex items-baseline justify-between gap-4">
             <div>
-              <SceneLabel>04 · The agents</SceneLabel>
+              <SceneLabel>05 · The agents</SceneLabel>
               <h2 className="mt-3 text-2xl font-bold tracking-tight">
                 Agentic AI
               </h2>
@@ -167,7 +195,7 @@ export default function HomePage() {
       </section>
 
       <LiveScene
-        scene="05 · The models"
+        scene="06 · The models"
         title="Hot models"
         blurb="What's trending on the Hugging Face Hub right now."
         radarAnchor="models"
@@ -176,7 +204,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="06 · The launchpad"
+        scene="07 · The launchpad"
         title="Fresh launches"
         blurb="AI projects shown on Hacker News in the past two weeks."
         radarAnchor="launches"
@@ -185,7 +213,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="07 · The conversation"
+        scene="08 · The conversation"
         title="What everyone's arguing about"
         blurb="Top AI stories on Hacker News from the past week."
         radarAnchor="conversation"
@@ -194,7 +222,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="08 · The labs"
+        scene="09 · The labs"
         title="Lab notes"
         blurb="Fresh posts from OpenAI, Google DeepMind, Google AI, and Hugging Face."
         radarAnchor="labs"
@@ -206,7 +234,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden rounded-2xl bg-zinc-100 p-8 dark:bg-zinc-900">
         <div className="glow-orb -top-20 right-0 h-56 w-56 bg-indigo-500/20 dark:bg-indigo-500/15" />
         <Reveal className="relative">
-          <SceneLabel>09 · Lock on</SceneLabel>
+          <SceneLabel>10 · Lock on</SceneLabel>
           <h2 className="mt-3 text-2xl font-bold tracking-tight">
             The signal, delivered — 5 minutes a week
           </h2>
