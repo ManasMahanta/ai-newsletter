@@ -148,7 +148,7 @@ export default function HomePage() {
               </h2>
             </div>
             <Link
-              href="/radar#agentic-ai"
+              href="/agents"
               className="shrink-0 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
             >
               Explore agentic AI →
