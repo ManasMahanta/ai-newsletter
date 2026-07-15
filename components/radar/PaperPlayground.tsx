@@ -6,13 +6,15 @@ import type { RadarPaper } from "@/lib/radar";
 export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
   const [selectedId, setSelectedId] = useState(papers[0]?.id ?? "");
   const [explanation, setExplanation] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [project, setProject] = useState("");
+  const [level, setLevel] = useState("Starter");
+  const [loading, setLoading] = useState<"explanation" | "project" | null>(null);
   const [error, setError] = useState("");
   const selected = papers.find((paper) => paper.id === selectedId) ?? papers[0];
 
   const explain = async () => {
     if (!selected || loading) return;
-    setLoading(true);
+    setLoading("explanation");
     setError("");
     try {
       const response = await fetch("/api/explain-paper", {
@@ -30,7 +32,32 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "We couldn't explain that paper right now.");
     } finally {
-      setLoading(false);
+      setLoading(null);
+    }
+  };
+
+  const buildProject = async () => {
+    if (!selected || loading) return;
+    setLoading("project");
+    setError("");
+    try {
+      const response = await fetch("/api/paper-project", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paper: { id: selected.id, title: selected.title, summary: selected.summary },
+          level,
+        }),
+      });
+      const data = (await response.json()) as { project?: string; error?: string };
+      if (!response.ok || !data.project) {
+        throw new Error(data.error ?? "We couldn't create a project plan right now.");
+      }
+      setProject(data.project);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "We couldn't create a project plan right now.");
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -52,6 +79,7 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
             onClick={() => {
               setSelectedId(paper.id);
               setExplanation("");
+              setProject("");
               setError("");
             }}
             className={`max-w-full rounded-lg border px-3 py-2 text-left text-sm transition ${
@@ -72,10 +100,31 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
           <button
             type="button"
             onClick={() => void explain()}
-            disabled={loading}
+            disabled={loading !== null}
             className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-400 disabled:cursor-wait disabled:opacity-70"
           >
-            {loading ? "Making it simple…" : "Explain simply"}
+            {loading === "explanation" ? "Making it simple…" : "Explain simply"}
+          </button>
+          <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+            Build level
+            <select
+              value={level}
+              onChange={(event) => setLevel(event.target.value)}
+              disabled={loading !== null}
+              className="rounded-lg border border-amber-200 bg-white px-2 py-1.5 text-sm text-zinc-800 outline-none focus:border-amber-400 dark:border-amber-500/30 dark:bg-zinc-950 dark:text-zinc-200"
+            >
+              <option>Starter</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </label>
+          <button
+            type="button"
+            onClick={() => void buildProject()}
+            disabled={loading !== null}
+            className="rounded-lg border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-900 transition hover:border-amber-500 hover:bg-amber-50 disabled:cursor-wait disabled:opacity-70 dark:border-amber-500/40 dark:bg-zinc-950 dark:text-amber-200 dark:hover:bg-amber-500/10"
+          >
+            {loading === "project" ? "Building your plan…" : "Build this paper"}
           </button>
           <a href={`https://arxiv.org/abs/${selected.id}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-amber-800 hover:underline dark:text-amber-300">
             Read the paper →
@@ -86,6 +135,12 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
       {explanation && (
         <div className="mt-4 whitespace-pre-wrap rounded-xl border border-amber-200 bg-amber-50/70 p-4 text-sm leading-relaxed text-zinc-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-zinc-300">
           {explanation}
+        </div>
+      )}
+      {project && (
+        <div className="mt-4 whitespace-pre-wrap rounded-xl border border-indigo-200 bg-indigo-50/70 p-4 text-sm leading-relaxed text-zinc-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-zinc-300">
+          <p className="mb-2 text-xs font-bold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">Paper-to-Project plan</p>
+          {project}
         </div>
       )}
       {error && <p role="alert" className="mt-3 text-sm text-rose-600 dark:text-rose-400">{error}</p>}
