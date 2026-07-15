@@ -21,6 +21,7 @@ export async function GET(request: Request) {
 
   revalidatePath("/");
   revalidatePath("/radar");
+  revalidatePath("/agents");
 
   return NextResponse.json({ revalidated: true, at: new Date().toISOString() });
 }
