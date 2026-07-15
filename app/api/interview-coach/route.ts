@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { callGLM, glmConfigured } from "@/lib/glm";
 
 const MAX_MESSAGES = 8;
 
@@ -14,8 +15,11 @@ function clean(value: unknown, limit: number) {
 }
 
 export async function POST(request: Request) {
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({ error: "Interview Coach is not configured yet. Add OPENAI_API_KEY to .env.local to enable it." }, { status: 503 });
+  if (!glmConfigured()) {
+    return NextResponse.json(
+      { error: "Interview Coach is not configured yet. Add ZAI_API_KEY to enable it." },
+      { status: 503 },
+    );
   }
 
   let body: CoachRequest;
@@ -31,29 +35,60 @@ export async function POST(request: Request) {
   const context = clean(body.session?.context, 500) || "No additional job context provided.";
   const answer = clean(body.candidateAnswer, 6000);
   const history = Array.isArray(body.messages)
-    ? body.messages.slice(-MAX_MESSAGES).map((message) => `${message.role === "candidate" ? "Candidate" : "Coach"}: ${clean(message.text, 6000)}`).join("\n\n")
+    ? body.messages
+        .slice(-MAX_MESSAGES)
+        .map((message) => `${message.role === "candidate" ? "Candidate" : "Coach"}: ${clean(message.text, 6000)}`)
+        .join("\n\n")
     : "";
 
   if (body.action !== "start" && (!answer || !history)) {
     return NextResponse.json({ error: "An interview answer is required." }, { status: 400 });
   }
 
-  const instructions = `You are a rigorous, encouraging interview coach. Run a realistic mock interview for this candidate:\n- Target role: ${role}\n- Experience: ${experience}\n- Focus: ${focus}\n- Context: ${context}\n\n${body.action === "start" ? "Ask exactly one tailored opening interview question. Do not provide an answer, rubric, or extra questions." : `The candidate just answered:\n${answer}\n\nGive concise, candid feedback in this exact structure:\nStrengths:\n- ...\n\nMake it stronger:\n- ...\n\nA sharper version:\n<brief example outline, never a full scripted answer>\n\nFollow-up question:\n<exactly one probing question>\n\nAssess evidence and trade-offs, not confidence or personality.`}\n\nConversation so far:\n${history}`;
+  const system = `You are a rigorous, encouraging interview coach. Run a realistic mock interview for this candidate:
+- Target role: ${role}
+- Experience: ${experience}
+- Focus: ${focus}
+- Context: ${context}
+
+${
+    body.action === "start"
+      ? "Ask exactly one tailored opening interview question. Do not provide an answer, rubric, or extra questions."
+      : `Give concise, candid feedback on the candidate's latest answer in this exact structure:
+Strengths:
+- ...
+
+Make it stronger:
+- ...
+
+A sharper version:
+<brief example outline, never a full scripted answer>
+
+Follow-up question:
+<exactly one probing question>
+
+Assess evidence and trade-offs, not confidence or personality.`
+  }`;
+
+  const user =
+    body.action === "start"
+      ? "Begin the mock interview."
+      : `Conversation so far:\n${history}\n\nThe candidate just answered:\n${answer}\n\nCoach the answer and continue the interview.`;
 
   try {
-    const response = await fetch("https://api.openai.com/v1/responses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-      body: JSON.stringify({ model: process.env.OPENAI_INTERVIEW_COACH_MODEL ?? "gpt-5.4-mini", instructions, input: body.action === "start" ? "Begin the mock interview." : "Coach the answer and continue the interview.", max_output_tokens: 700 }),
-    });
-    const result = (await response.json()) as { output_text?: string; error?: { message?: string } };
-    if (!response.ok || !result.output_text) {
-      console.error("Interview Coach API error", result.error?.message ?? response.status);
-      return NextResponse.json({ error: "The coach is unavailable right now. Please try again shortly." }, { status: 502 });
+    const reply = await callGLM(system, user, 900);
+    if (!reply) {
+      return NextResponse.json(
+        { error: "The coach is unavailable right now. Please try again shortly." },
+        { status: 502 },
+      );
     }
-    return NextResponse.json({ reply: result.output_text });
+    return NextResponse.json({ reply });
   } catch (error) {
     console.error("Interview Coach request failed", error);
-    return NextResponse.json({ error: "The coach is unavailable right now. Please try again shortly." }, { status: 502 });
+    return NextResponse.json(
+      { error: "The coach is unavailable right now. Please try again shortly." },
+      { status: 502 },
+    );
   }
 }
