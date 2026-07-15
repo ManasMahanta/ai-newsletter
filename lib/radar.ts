@@ -47,6 +47,11 @@ async function getJson(url: string, revalidate: number, headers?: HeadersInit) {
   return res.json();
 }
 
+const GH_HEADERS = {
+  Accept: "application/vnd.github+json",
+  "User-Agent": "signal-and-noise-newsletter",
+};
+
 /** Trending papers from Hugging Face Daily Papers (community-upvoted arXiv). */
 export async function getTrendingPapers(limit = 8): Promise<RadarPaper[]> {
   try {
@@ -69,20 +74,13 @@ export async function getTrendingPapers(limit = 8): Promise<RadarPaper[]> {
   }
 }
 
-/** Fast-rising open-source AI repos created in the last 30 days. */
-export async function getTrendingRepos(limit = 8): Promise<RadarRepo[]> {
+/** Shared GitHub repo search: any query string, sorted by stars. */
+async function fetchRepos(query: string, limit: number): Promise<RadarRepo[]> {
   try {
-    const since = new Date(Date.now() - 30 * 24 * HOUR * 1000)
-      .toISOString()
-      .slice(0, 10);
-    const q = encodeURIComponent(`topic:ai created:>${since}`);
     const data = await getJson(
-      `https://api.github.com/search/repositories?q=${q}&sort=stars&order=desc&per_page=${limit}`,
+      `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=stars&order=desc&per_page=${limit}`,
       6 * HOUR,
-      {
-        Accept: "application/vnd.github+json",
-        "User-Agent": "signal-and-noise-newsletter",
-      },
+      GH_HEADERS,
     );
     if (!Array.isArray(data?.items)) return [];
     return data.items
@@ -98,6 +96,14 @@ export async function getTrendingRepos(limit = 8): Promise<RadarRepo[]> {
   } catch {
     return [];
   }
+}
+
+/** Fast-rising open-source AI repos created in the last 30 days. */
+export async function getTrendingRepos(limit = 8): Promise<RadarRepo[]> {
+  const since = new Date(Date.now() - 30 * 24 * HOUR * 1000)
+    .toISOString()
+    .slice(0, 10);
+  return fetchRepos(`topic:ai created:>${since}`, limit);
 }
 
 /** Trending models on the Hugging Face Hub right now. */
@@ -122,13 +128,16 @@ export async function getTrendingModels(limit = 8): Promise<RadarModel[]> {
   }
 }
 
-/** Top AI stories on Hacker News from the past week. */
-export async function getTopStories(limit = 8): Promise<RadarStory[]> {
+/** Shared HN Algolia "top stories" search: any query, points threshold, days back. */
+async function fetchTopStories(
+  query: string,
+  { pointsAbove, daysBack, limit }: { pointsAbove: number; daysBack: number; limit: number },
+): Promise<RadarStory[]> {
   try {
-    const weekAgo = Math.floor(Date.now() / 1000) - 7 * 24 * HOUR;
-    const filters = encodeURIComponent(`created_at_i>${weekAgo},points>50`);
+    const since = Math.floor(Date.now() / 1000) - daysBack * 24 * HOUR;
+    const filters = encodeURIComponent(`created_at_i>${since},points>${pointsAbove}`);
     const data = await getJson(
-      `https://hn.algolia.com/api/v1/search?tags=story&query=AI&numericFilters=${filters}&hitsPerPage=${limit}`,
+      `https://hn.algolia.com/api/v1/search?tags=story&query=${encodeURIComponent(query)}&numericFilters=${filters}&hitsPerPage=${limit}`,
       HOUR,
     );
     if (!Array.isArray(data?.hits)) return [];
@@ -147,6 +156,11 @@ export async function getTopStories(limit = 8): Promise<RadarStory[]> {
   } catch {
     return [];
   }
+}
+
+/** Top AI stories on Hacker News from the past week. */
+export async function getTopStories(limit = 8): Promise<RadarStory[]> {
+  return fetchTopStories("AI", { pointsAbove: 50, daysBack: 7, limit });
 }
 
 export type RadarArxivPaper = {
@@ -215,11 +229,11 @@ async function getText(url: string, revalidate: number): Promise<string> {
   return res.text();
 }
 
-/** Newest submissions on arXiv in cs.AI / cs.LG / cs.CL — raw, uncurated. */
-export async function getFreshArxiv(limit = 8): Promise<RadarArxivPaper[]> {
+/** Shared arXiv search: any search_query expression, newest first. */
+async function fetchArxiv(searchQuery: string, limit: number): Promise<RadarArxivPaper[]> {
   try {
     const xml = await getText(
-      `https://export.arxiv.org/api/query?search_query=cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL&sortBy=submittedDate&sortOrder=descending&max_results=${limit}`,
+      `https://export.arxiv.org/api/query?search_query=${searchQuery}&sortBy=submittedDate&sortOrder=descending&max_results=${limit}`,
       3 * HOUR,
     );
     return xmlBlocks(xml, "entry")
@@ -235,6 +249,40 @@ export async function getFreshArxiv(limit = 8): Promise<RadarArxivPaper[]> {
         };
       })
       .filter((p) => p.id && p.title);
+  } catch {
+    return [];
+  }
+}
+
+/** Newest submissions on arXiv in cs.AI / cs.LG / cs.CL — raw, uncurated. */
+export async function getFreshArxiv(limit = 8): Promise<RadarArxivPaper[]> {
+  return fetchArxiv("cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL", limit);
+}
+
+/** Shared Hugging Face Hub search (models or spaces) by keyword. */
+async function fetchHubSearch(
+  kind: "models" | "spaces",
+  params: string,
+  limit: number,
+): Promise<Array<{ id: string; likes: number; downloads?: number; sdk?: string; pipelineTag?: string }>> {
+  try {
+    const query = [params, `sort=trendingScore`, `limit=${limit}`]
+      .filter(Boolean)
+      .join("&");
+    const data = await getJson(
+      `https://huggingface.co/api/${kind}?${query}`,
+      6 * HOUR,
+    );
+    if (!Array.isArray(data)) return [];
+    return data
+      .filter((d) => d?.id)
+      .map((d) => ({
+        id: String(d.id),
+        likes: Number(d.likes ?? 0),
+        downloads: Number(d.downloads ?? 0),
+        sdk: String(d.sdk ?? ""),
+        pipelineTag: String(d.pipeline_tag ?? "").replace(/-/g, " "),
+      }));
   } catch {
     return [];
   }
@@ -263,45 +311,23 @@ export async function getTrendingDatasets(limit = 8): Promise<RadarDataset[]> {
 
 /** Trending Spaces — live AI demos you can try in the browser. */
 export async function getTrendingSpaces(limit = 8): Promise<RadarSpace[]> {
-  try {
-    const data = await getJson(
-      `https://huggingface.co/api/spaces?sort=trendingScore&limit=${limit}`,
-      6 * HOUR,
-    );
-    if (!Array.isArray(data)) return [];
-    return data
-      .filter((s) => s?.id)
-      .map((s) => ({
-        id: String(s.id),
-        likes: Number(s.likes ?? 0),
-        sdk: String(s.sdk ?? ""),
-        url: `https://huggingface.co/spaces/${s.id}`,
-      }));
-  } catch {
-    return [];
-  }
+  const spaces = await fetchHubSearch("spaces", "", limit);
+  return spaces.map((s) => ({
+    id: s.id,
+    likes: s.likes,
+    sdk: s.sdk ?? "",
+    url: `https://huggingface.co/spaces/${s.id}`,
+  }));
 }
 
-/** Repos whose releases are worth watching, newest release first. */
-const RELEASE_REPOS = [
-  "vllm-project/vllm",
-  "huggingface/transformers",
-  "ggml-org/llama.cpp",
-  "ollama/ollama",
-  "langchain-ai/langchain",
-  "pytorch/pytorch",
-];
-
-export async function getLatestReleases(): Promise<RadarRelease[]> {
+/** Shared GitHub "latest release" lookup across a fixed list of repos. */
+async function fetchReleases(repos: string[]): Promise<RadarRelease[]> {
   const results = await Promise.allSettled(
-    RELEASE_REPOS.map(async (repo) => {
+    repos.map(async (repo) => {
       const r = await getJson(
         `https://api.github.com/repos/${repo}/releases/latest`,
         6 * HOUR,
-        {
-          Accept: "application/vnd.github+json",
-          "User-Agent": "signal-and-noise-newsletter",
-        },
+        GH_HEADERS,
       );
       if (!r?.html_url) throw new Error("no release");
       return {
@@ -321,13 +347,30 @@ export async function getLatestReleases(): Promise<RadarRelease[]> {
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
 }
 
-/** Show HN: AI projects launched in the past two weeks. */
-export async function getShowHNLaunches(limit = 8): Promise<RadarStory[]> {
+/** Repos whose releases are worth watching, newest release first. */
+const RELEASE_REPOS = [
+  "vllm-project/vllm",
+  "huggingface/transformers",
+  "ggml-org/llama.cpp",
+  "ollama/ollama",
+  "langchain-ai/langchain",
+  "pytorch/pytorch",
+];
+
+export async function getLatestReleases(): Promise<RadarRelease[]> {
+  return fetchReleases(RELEASE_REPOS);
+}
+
+/** Shared "Show HN" search: any query, newest launches first. */
+async function fetchShowHN(
+  query: string,
+  { pointsAbove, daysBack, limit }: { pointsAbove: number; daysBack: number; limit: number },
+): Promise<RadarStory[]> {
   try {
-    const twoWeeksAgo = Math.floor(Date.now() / 1000) - 14 * 24 * HOUR;
-    const filters = encodeURIComponent(`created_at_i>${twoWeeksAgo},points>10`);
+    const since = Math.floor(Date.now() / 1000) - daysBack * 24 * HOUR;
+    const filters = encodeURIComponent(`created_at_i>${since},points>${pointsAbove}`);
     const data = await getJson(
-      `https://hn.algolia.com/api/v1/search?tags=show_hn&query=AI&numericFilters=${filters}&hitsPerPage=${limit}`,
+      `https://hn.algolia.com/api/v1/search?tags=show_hn&query=${encodeURIComponent(query)}&numericFilters=${filters}&hitsPerPage=${limit}`,
       3 * HOUR,
     );
     if (!Array.isArray(data?.hits)) return [];
@@ -348,7 +391,12 @@ export async function getShowHNLaunches(limit = 8): Promise<RadarStory[]> {
   }
 }
 
-/** Latest posts from the major AI labs' blogs (RSS). */
+/** Show HN: AI projects launched in the past two weeks. */
+export async function getShowHNLaunches(limit = 8): Promise<RadarStory[]> {
+  return fetchShowHN("AI", { pointsAbove: 10, daysBack: 14, limit });
+}
+
+/** Major AI labs' blogs (RSS), optionally filtered to matching titles. */
 const LAB_FEEDS = [
   { source: "OpenAI", url: "https://openai.com/news/rss.xml" },
   { source: "Google DeepMind", url: "https://deepmind.google/blog/rss.xml" },
@@ -356,12 +404,15 @@ const LAB_FEEDS = [
   { source: "Hugging Face", url: "https://huggingface.co/blog/feed.xml" },
 ];
 
-export async function getLabPosts(limit = 8): Promise<RadarPost[]> {
+async function fetchLabPosts(
+  limit: number,
+  filter?: (title: string) => boolean,
+): Promise<RadarPost[]> {
   const results = await Promise.allSettled(
     LAB_FEEDS.map(async ({ source, url }) => {
       const xml = await getText(url, 3 * HOUR);
       return xmlBlocks(xml, "item")
-        .slice(0, 4)
+        .slice(0, 8)
         .map((item) => {
           const date = new Date(xmlText(item, "pubDate"));
           return {
@@ -373,7 +424,7 @@ export async function getLabPosts(limit = 8): Promise<RadarPost[]> {
               : date.toISOString(),
           };
         })
-        .filter((p) => p.title && p.url);
+        .filter((p) => p.title && p.url && (!filter || filter(p.title)));
     }),
   );
   return results
@@ -383,6 +434,10 @@ export async function getLabPosts(limit = 8): Promise<RadarPost[]> {
     .flatMap((r) => r.value)
     .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
     .slice(0, limit);
+}
+
+export async function getLabPosts(limit = 8): Promise<RadarPost[]> {
+  return fetchLabPosts(limit);
 }
 
 export function formatShortDate(iso: string): string {
@@ -400,4 +455,71 @@ export function formatCount(n: number): string {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, "")}k`;
   return String(n);
+}
+
+// --- Agentic AI: every feed above, re-scoped to AI agents specifically ----
+
+/** Title-anchored arXiv search: papers actually about agents, not passing mentions. */
+export async function getAgentPapers(limit = 8): Promise<RadarArxivPaper[]> {
+  return fetchArxiv("ti:agent+AND+%28cat:cs.AI+OR+cat:cs.MA+OR+cat:cs.CL%29", limit);
+}
+
+/** Repos tagged with the standard "ai-agents" GitHub topic, active recently. */
+export async function getAgentRepos(limit = 8): Promise<RadarRepo[]> {
+  const since = new Date(Date.now() - 60 * 24 * HOUR * 1000)
+    .toISOString()
+    .slice(0, 10);
+  return fetchRepos(`topic:ai-agents pushed:>${since}`, limit);
+}
+
+/** Releases from the agent frameworks most people build on. */
+const AGENT_RELEASE_REPOS = [
+  "langchain-ai/langchain",
+  "browser-use/browser-use",
+  "All-Hands-AI/OpenHands",
+  "crewAIInc/crewAI",
+  "microsoft/autogen",
+  "openai/openai-agents-python",
+];
+
+export async function getAgentReleases(): Promise<RadarRelease[]> {
+  return fetchReleases(AGENT_RELEASE_REPOS);
+}
+
+/** Trending agent-related models on the Hugging Face Hub. */
+export async function getAgentModels(limit = 8): Promise<RadarModel[]> {
+  const models = await fetchHubSearch("models", "search=agent", limit);
+  return models.map((m) => ({
+    id: m.id,
+    likes: m.likes,
+    downloads: m.downloads ?? 0,
+    pipelineTag: m.pipelineTag ?? "",
+    url: `https://huggingface.co/${m.id}`,
+  }));
+}
+
+/** Trending agent demos (Spaces) you can run in the browser. */
+export async function getAgentSpaces(limit = 8): Promise<RadarSpace[]> {
+  const spaces = await fetchHubSearch("spaces", "search=agent", limit);
+  return spaces.map((s) => ({
+    id: s.id,
+    likes: s.likes,
+    sdk: s.sdk ?? "",
+    url: `https://huggingface.co/spaces/${s.id}`,
+  }));
+}
+
+/** Show HN: agent projects launched in the past two weeks. */
+export async function getAgentLaunches(limit = 8): Promise<RadarStory[]> {
+  return fetchShowHN("agent", { pointsAbove: 5, daysBack: 14, limit });
+}
+
+/** Top Hacker News discussions specifically about AI agents. */
+export async function getAgentDiscussions(limit = 8): Promise<RadarStory[]> {
+  return fetchTopStories("AI agent", { pointsAbove: 50, daysBack: 7, limit });
+}
+
+/** Lab blog posts whose titles mention agents. */
+export async function getAgentLabPosts(limit = 8): Promise<RadarPost[]> {
+  return fetchLabPosts(limit, (title) => /agent/i.test(title));
 }

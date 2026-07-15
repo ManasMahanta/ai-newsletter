@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export type RadarNavSection = { id: string; label: string };
+export type RadarNavSection = { id: string; label: string; group?: string };
 
 // Scrollspy nav for the radar page: a sticky vertical sidebar on desktop,
 // a sticky horizontal pill bar on mobile. Highlights the section in view.
@@ -41,6 +41,8 @@ export default function RadarNav({
     };
   }, [sections]);
 
+  let lastGroup: string | undefined;
+
   return (
     <nav
       aria-label="Radar sections"
@@ -48,23 +50,34 @@ export default function RadarNav({
     >
       {sections.map((s) => {
         const active = s.id === activeId;
+        const showGroup = s.group && s.group !== lastGroup;
+        lastGroup = s.group;
         return (
-          <a
-            key={s.id}
-            href={`#${s.id}`}
-            aria-current={active ? "true" : undefined}
-            onClick={() => {
-              clickedRef.current = Date.now();
-              setActiveId(s.id);
-            }}
-            className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm transition ${
-              active
-                ? "bg-indigo-50 font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300"
-                : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
-            }`}
-          >
-            {s.label}
-          </a>
+          <span key={s.id} className="contents">
+            {showGroup && (
+              <span
+                className="hidden pt-3 pb-1 pl-3 text-xs font-semibold uppercase tracking-wide text-zinc-400 first:pt-1 lg:block dark:text-zinc-600"
+                aria-hidden="true"
+              >
+                {s.group}
+              </span>
+            )}
+            <a
+              href={`#${s.id}`}
+              aria-current={active ? "true" : undefined}
+              onClick={() => {
+                clickedRef.current = Date.now();
+                setActiveId(s.id);
+              }}
+              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm transition ${
+                active
+                  ? "bg-indigo-50 font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300"
+                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
+              }`}
+            >
+              {s.label}
+            </a>
+          </span>
         );
       })}
     </nav>
