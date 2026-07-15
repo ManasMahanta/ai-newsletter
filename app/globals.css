@@ -37,6 +37,18 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Keep long generated AI text and external feed titles from widening the page. */
+main, section, article, div, p, li, h1, h2, h3 {
+  min-width: 0;
+}
+
+@media (max-width: 639px) {
+  /* iOS zooms focused controls below 16px. */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* --- Site-wide ambient backdrop ----------------------------------------
    Rendered by components/cinematic/Backdrop.tsx, fixed behind all pages. */
 

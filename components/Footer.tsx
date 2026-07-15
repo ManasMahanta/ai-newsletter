@@ -9,26 +9,26 @@ export default function Footer() {
           © {new Date().getFullYear()} {site.name}. {site.cadence.toLowerCase()},
           free.
         </p>
-        <nav className="flex flex-wrap gap-4">
-          <Link href="/issues" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+        <nav className="flex flex-wrap gap-x-4 gap-y-1">
+          <Link href="/issues" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Archive
           </Link>
-          <Link href="/glossary" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+          <Link href="/glossary" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Glossary
           </Link>
-          <Link href="/models" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+          <Link href="/models" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Models
           </Link>
-          <Link href="/start-here" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+          <Link href="/start-here" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Start Here
           </Link>
-          <Link href="/rss.xml" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+          <Link href="/rss.xml" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             RSS
           </Link>
-          <Link href="/radar.xml" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+          <Link href="/radar.xml" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Radar RSS
           </Link>
-          <Link href="/privacy" className="hover:text-zinc-900 dark:hover:text-zinc-100">
+          <Link href="/privacy" className="py-2 hover:text-zinc-900 dark:hover:text-zinc-100">
             Privacy
           </Link>
         </nav>

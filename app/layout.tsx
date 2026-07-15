@@ -49,7 +49,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col overflow-x-clip">
         <Backdrop />
         <Header />
-        <main className="mx-auto w-full max-w-4xl flex-1 px-5 py-10">
+        <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-5 sm:py-10">
           {children}
         </main>
         <Footer />

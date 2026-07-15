@@ -71,7 +71,7 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
         Pick a trending paper. We&apos;ll turn its research summary into a tiny story—without pretending the paper says more than it does.
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-2" aria-label="Choose a paper">
+      <div className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0" aria-label="Choose a paper">
         {papers.map((paper) => (
           <button
             key={paper.id}
@@ -82,7 +82,7 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
               setProject("");
               setError("");
             }}
-            className={`max-w-full rounded-lg border px-3 py-2 text-left text-sm transition ${
+            className={`w-64 shrink-0 rounded-lg border px-3 py-3 text-left text-sm transition sm:w-auto sm:max-w-full ${
               paper.id === selected.id
                 ? "border-amber-400 bg-amber-100 font-medium text-amber-950 dark:border-amber-400/70 dark:bg-amber-500/20 dark:text-amber-100"
                 : "border-zinc-200 bg-white/70 text-zinc-700 hover:border-amber-300 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-300"
@@ -96,16 +96,16 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
       <div className="mt-4 rounded-xl border border-amber-100 bg-white/75 p-4 dark:border-amber-500/20 dark:bg-zinc-950/65">
         <p className="text-sm font-semibold">{selected.title}</p>
         <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">{selected.summary}</p>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
           <button
             type="button"
             onClick={() => void explain()}
             disabled={loading !== null}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-amber-950 transition hover:bg-amber-400 disabled:cursor-wait disabled:opacity-70"
+            className="w-full rounded-lg bg-amber-500 px-4 py-3 text-sm font-semibold text-amber-950 transition hover:bg-amber-400 disabled:cursor-wait disabled:opacity-70 sm:w-auto sm:py-2"
           >
             {loading === "explanation" ? "Making it simple…" : "Explain simply"}
           </button>
-          <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <label className="flex items-center justify-between gap-2 text-sm text-zinc-600 dark:text-zinc-400 sm:justify-start">
             Build level
             <select
               value={level}
@@ -122,11 +122,11 @@ export default function PaperPlayground({ papers }: { papers: RadarPaper[] }) {
             type="button"
             onClick={() => void buildProject()}
             disabled={loading !== null}
-            className="rounded-lg border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-900 transition hover:border-amber-500 hover:bg-amber-50 disabled:cursor-wait disabled:opacity-70 dark:border-amber-500/40 dark:bg-zinc-950 dark:text-amber-200 dark:hover:bg-amber-500/10"
+            className="w-full rounded-lg border border-amber-300 bg-white px-4 py-3 text-sm font-semibold text-amber-900 transition hover:border-amber-500 hover:bg-amber-50 disabled:cursor-wait disabled:opacity-70 dark:border-amber-500/40 dark:bg-zinc-950 dark:text-amber-200 dark:hover:bg-amber-500/10 sm:w-auto sm:py-2"
           >
             {loading === "project" ? "Building your plan…" : "Build this paper"}
           </button>
-          <a href={`https://arxiv.org/abs/${selected.id}`} target="_blank" rel="noreferrer" className="text-sm font-medium text-amber-800 hover:underline dark:text-amber-300">
+          <a href={`https://arxiv.org/abs/${selected.id}`} target="_blank" rel="noreferrer" className="py-2 text-center text-sm font-medium text-amber-800 hover:underline dark:text-amber-300 sm:text-left">
             Read the paper →
           </a>
         </div>

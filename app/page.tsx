@@ -93,16 +93,16 @@ function LiveScene({
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col gap-24">
+    <div className="flex flex-col gap-16 sm:gap-24">
       {/* Scene 01 — The Noise: chaos behind, one clear promise in front.
           No local glows or hard edges — the canvas fades into the site
           backdrop so the scene reads as part of the same environment. */}
-      <section className="relative -mx-5 flex min-h-[72vh] items-center px-5">
+      <section className="relative -mx-4 flex min-h-[64svh] items-center px-4 sm:-mx-5 sm:min-h-[72vh] sm:px-5">
         <SignalCanvas />
         <Parallax speed={0.08} className="relative">
           <div className="flex max-w-2xl flex-col items-start gap-5">
             <SceneLabel>01 · The noise</SceneLabel>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+            <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
               Every week, AI produces a thousand headlines.{" "}
               <span className="text-indigo-600 dark:text-indigo-400">
                 Maybe five matter.
@@ -157,7 +157,7 @@ export default function HomePage() {
         <PapersFeed limit={4} />
       </LiveScene>
 
-      <section className="relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-indigo-50 p-7 dark:border-amber-500/30 dark:from-amber-500/10 dark:via-zinc-950 dark:to-indigo-500/10">
+      <section className="relative overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-indigo-50 p-5 sm:p-7 dark:border-amber-500/30 dark:from-amber-500/10 dark:via-zinc-950 dark:to-indigo-500/10">
         <div className="glow-orb -right-12 -top-16 h-48 w-48 bg-amber-400/20 dark:bg-amber-400/10" />
         <Reveal className="relative">
           <SceneLabel>04 · Paper Playground</SceneLabel>
@@ -173,7 +173,7 @@ export default function HomePage() {
             </div>
             <Link
               href="/radar#paper-playground"
-              className="shrink-0 rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-semibold text-amber-950 transition hover:bg-amber-400"
+              className="w-full rounded-lg bg-amber-500 px-4 py-3 text-center text-sm font-semibold text-amber-950 transition hover:bg-amber-400 sm:w-auto"
             >
               Explore Paper Playground →
             </Link>
@@ -269,7 +269,7 @@ export default function HomePage() {
       </LiveScene>
 
       {/* Scene 11 — Lock On: the invitation */}
-      <section className="relative overflow-hidden rounded-2xl bg-zinc-100 p-8 dark:bg-zinc-900">
+      <section className="relative overflow-hidden rounded-2xl bg-zinc-100 p-5 sm:p-8 dark:bg-zinc-900">
         <div className="glow-orb -top-20 right-0 h-56 w-56 bg-indigo-500/20 dark:bg-indigo-500/15" />
         <Reveal className="relative">
           <SceneLabel>11 · Lock on</SceneLabel>

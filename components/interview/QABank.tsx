@@ -250,7 +250,7 @@ export default function QABank({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
           <div className="flex rounded-lg border border-zinc-200 p-0.5 dark:border-zinc-800">
             {(["study", "quiz"] as const).map((m) => (
               <button
@@ -283,7 +283,7 @@ export default function QABank({
               setVisible(PAGE);
             }}
             placeholder="Filter questions…"
-            className="w-full max-w-56 rounded-lg border border-zinc-200 bg-white/65 px-3 py-1.5 text-sm outline-none placeholder:text-zinc-400 focus:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950/55 dark:focus:border-indigo-500"
+            className="w-full rounded-lg border border-zinc-200 bg-white/65 px-3 py-2 text-sm outline-none placeholder:text-zinc-400 focus:border-indigo-400 sm:max-w-56 dark:border-zinc-800 dark:bg-zinc-950/55 dark:focus:border-indigo-500"
           />
         )}
       </div>
@@ -307,7 +307,7 @@ export default function QABank({
                     ›
                   </span>
                 </summary>
-                <div className="border-t border-dashed border-zinc-200 bg-zinc-50/60 px-5 py-4 pl-12 text-sm leading-relaxed text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-400">
+                <div className="border-t border-dashed border-zinc-200 bg-zinc-50/60 px-5 py-4 text-sm leading-relaxed text-zinc-600 sm:pl-12 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-400">
                   <AnswerBody text={item.a} />
                 </div>
               </details>

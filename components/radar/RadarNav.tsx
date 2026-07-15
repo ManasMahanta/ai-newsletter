@@ -69,7 +69,7 @@ export default function RadarNav({
                 clickedRef.current = Date.now();
                 setActiveId(s.id);
               }}
-              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm transition ${
+              className={`whitespace-nowrap rounded-lg px-3 py-2.5 text-sm transition lg:py-1.5 ${
                 active
                   ? "bg-indigo-50 font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300"
                   : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"

@@ -87,7 +87,7 @@ export default function InterviewCoach() {
               setAnswer("");
               setError("");
             }}
-            className="rounded-lg border border-indigo-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:border-indigo-400 dark:border-indigo-500/30 dark:bg-zinc-950/70 dark:text-indigo-300"
+            className="rounded-lg border border-indigo-200 bg-white/80 px-3 py-2.5 text-sm font-medium text-indigo-700 hover:border-indigo-400 dark:border-indigo-500/30 dark:bg-zinc-950/70 dark:text-indigo-300"
           >
             New session
           </button>
@@ -115,7 +115,7 @@ export default function InterviewCoach() {
             <input value={session.context} onChange={(e) => setSession({ ...session, context: e.target.value })} maxLength={500} placeholder="Paste the key requirements" className="mt-1.5 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-normal outline-none focus:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950" />
           </label>
           <div className="sm:col-span-2">
-            <button type="submit" disabled={loading} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-wait disabled:opacity-70">
+            <button type="submit" disabled={loading} className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-wait disabled:opacity-70 sm:w-auto sm:py-2">
               {loading ? "Preparing your interview…" : "Start mock interview"}
             </button>
           </div>
@@ -136,7 +136,7 @@ export default function InterviewCoach() {
             <textarea id="interview-answer" value={answer} onChange={(e) => setAnswer(e.target.value)} maxLength={6000} rows={5} placeholder="Answer as you would in the interview. Concrete decisions, trade-offs, and outcomes make the best practice." className="w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm leading-relaxed outline-none focus:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950" />
             <div className="mt-2 flex items-center justify-between gap-3">
               <p className="text-xs text-zinc-500 dark:text-zinc-400">{answer.length}/6000</p>
-              <button type="submit" disabled={!answer.trim() || loading} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50">Get feedback &amp; next question</button>
+              <button type="submit" disabled={!answer.trim() || loading} className="rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 sm:py-2">Get feedback &amp; next question</button>
             </div>
           </form>
         </div>
