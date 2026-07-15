@@ -19,6 +19,7 @@ export type Job = {
   regions: JobRegion[]; // which location filters this job matches
   postedAt?: string; // ISO date
   via?: string; // aggregator credit, e.g. "Remotive"
+  minExperience?: number; // years, when the source provides it (Naukri)
 };
 
 const GREENHOUSE_BOARDS: [board: string, company: string][] = [
@@ -62,7 +63,7 @@ export function classifyRegions(location: string): JobRegion[] {
   return regions;
 }
 
-export function classifyLevel(title: string): JobLevel {
+export function classifyLevel(title: string, minExperience?: number): JobLevel {
   if (/\b(head|director|vp|svp|evp|vice president|chief|cto|manager)\b/i.test(title)) {
     return "leadership";
   }
@@ -71,6 +72,11 @@ export function classifyLevel(title: string): JobLevel {
   }
   if (/\b(senior|staff|principal|sr\.?|lead|distinguished)\b/i.test(title)) {
     return "senior";
+  }
+  // Title is inconclusive — fall back to required years when the source has it.
+  if (minExperience !== undefined) {
+    if (minExperience >= 7) return "senior";
+    if (minExperience <= 1) return "entry";
   }
   return "mid";
 }
@@ -185,6 +191,96 @@ async function fetchRemotive(): Promise<Job[]> {
   }
 }
 
+// Naukri (India's biggest job board) via the Apify scraping platform.
+// Scrape runs are metered (~$0.26 for 50 jobs), so the site never triggers
+// one on a page view: pages read the LAST stored run's results (a free,
+// cacheable GET), and triggerNaukriScrape() — called from /api/refresh —
+// starts a fresh run at most every NAUKRI_MIN_HOURS to stay well inside
+// Apify's $5/month free credit (~$3/month at this cadence).
+const APIFY_ACTOR = "muhammetakkurtt~naukri-job-scraper";
+const NAUKRI_MIN_HOURS = 60;
+
+type NaukriItem = {
+  jobId?: string;
+  title?: string;
+  companyName?: string;
+  location?: string;
+  jdURL?: string;
+  createdDate?: string; // "2026-07-15 10:39:14"
+  minimumExperience?: number;
+};
+
+async function fetchNaukri(): Promise<Job[]> {
+  const token = process.env.APIFY_TOKEN;
+  if (!token) return [];
+  try {
+    const res = await fetch(
+      `https://api.apify.com/v2/acts/${APIFY_ACTOR}/runs/last/dataset/items?token=${token}&status=SUCCEEDED`,
+      { next: { revalidate: REVALIDATE } },
+    );
+    if (!res.ok) return [];
+    const data = (await res.json()) as NaukriItem[];
+    if (!Array.isArray(data)) return [];
+    return data
+      .filter((j) => j.title && j.jdURL)
+      .map((j) => {
+        const location = j.location ?? "India";
+        const regions = classifyRegions(location);
+        return {
+          id: `naukri-${j.jobId ?? j.jdURL}`,
+          title: j.title as string,
+          company: j.companyName ?? "Unknown",
+          location,
+          url: j.jdURL as string,
+          regions: regions.length > 0 ? regions : (["india"] as JobRegion[]),
+          postedAt: j.createdDate?.replace(" ", "T"),
+          via: "Naukri",
+          minExperience: j.minimumExperience,
+        };
+      });
+  } catch {
+    return [];
+  }
+}
+
+// Fire-and-forget: start a fresh Naukri scrape unless one ran recently.
+// Returns a short status string for the refresh endpoint's response.
+export async function triggerNaukriScrape(): Promise<string> {
+  const token = process.env.APIFY_TOKEN;
+  if (!token) return "skipped (no APIFY_TOKEN)";
+  try {
+    const last = await fetch(
+      `https://api.apify.com/v2/acts/${APIFY_ACTOR}/runs/last?token=${token}`,
+      { cache: "no-store" },
+    );
+    if (last.ok) {
+      const { data } = (await last.json()) as { data?: { startedAt?: string } };
+      const startedAt = data?.startedAt ? Date.parse(data.startedAt) : 0;
+      const ageHours = (Date.now() - startedAt) / 3_600_000;
+      if (ageHours < NAUKRI_MIN_HOURS) {
+        return `skipped (last run ${Math.round(ageHours)}h ago)`;
+      }
+    }
+    const run = await fetch(
+      `https://api.apify.com/v2/acts/${APIFY_ACTOR}/runs?token=${token}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          keyword: "generative ai",
+          maxJobs: 50,
+          fetchDetails: false,
+          sortBy: "date",
+          freshness: "7",
+        }),
+      },
+    );
+    return run.ok ? "started" : `failed (${run.status})`;
+  } catch {
+    return "failed (network)";
+  }
+}
+
 const PER_LEVEL = 8;
 
 export async function getJobsByLevel(): Promise<Record<JobLevel, Job[]>> {
@@ -192,6 +288,7 @@ export async function getJobsByLevel(): Promise<Record<JobLevel, Job[]>> {
     ...GREENHOUSE_BOARDS.map(([b, c]) => fetchGreenhouse(b, c)),
     ...ASHBY_BOARDS.map(([b, c]) => fetchAshby(b, c)),
     fetchRemotive(),
+    fetchNaukri(),
   ]);
 
   const seen = new Set<string>();
@@ -222,7 +319,7 @@ export async function getJobsByLevel(): Promise<Record<JobLevel, Job[]>> {
     leadership: { us: 0, india: 0 },
   };
   for (const job of all) {
-    const level = classifyLevel(job.title);
+    const level = classifyLevel(job.title, job.minExperience);
     const wanted = job.regions.filter((r) => counts[level][r] < PER_LEVEL);
     if (wanted.length === 0) continue;
     for (const r of wanted) counts[level][r] += 1;

@@ -180,9 +180,9 @@ export default function InterviewPrepPage() {
                 <p className="mt-1 mb-3 text-sm text-zinc-500 dark:text-zinc-400">
                   Live listings matched to this level — pick a location. US
                   roles come from the boards of Anthropic, OpenAI, Cohere,
-                  Scale AI, and ElevenLabs; India roles from Sarvam AI, Turing,
-                  and the labs&apos; India offices; plus remote roles via
-                  Remotive. Refreshes every few hours.
+                  Scale AI, and ElevenLabs; India roles from Naukri, Sarvam
+                  AI, Turing, and the labs&apos; India offices; plus remote
+                  roles via Remotive. Refreshes every few hours.
                 </p>
                 <Suspense fallback={<SkeletonGrid />}>
                   <OpenRolesFeed level={l.id as JobLevel} />
