@@ -9,6 +9,20 @@ import {
   getInterviewStories,
 } from "@/lib/radar";
 import { prepLevels, prepTips } from "@/lib/interview";
+import QABank from "@/components/interview/QABank";
+import type { QA } from "@/lib/qa/types";
+import { entryQA } from "@/lib/qa/entry";
+import { midQA } from "@/lib/qa/mid";
+import { seniorQA } from "@/lib/qa/senior";
+import { leadershipQA } from "@/lib/qa/leadership";
+import { systemDesignQA } from "@/lib/qa/system-design";
+
+const banks: Record<string, QA[]> = {
+  entry: entryQA,
+  mid: midQA,
+  senior: seniorQA,
+  leadership: leadershipQA,
+};
 
 export const metadata: Metadata = {
   title: "Interview Prep",
@@ -18,6 +32,7 @@ export const metadata: Metadata = {
 
 const sections = [
   ...prepLevels.map((l) => ({ id: l.id, label: l.level })),
+  { id: "system-design", label: "System design" },
   { id: "tips", label: "Ground rules" },
   { id: "resources", label: "Live resources" },
   { id: "hiring", label: "Hiring chatter" },
@@ -111,38 +126,47 @@ export default function InterviewPrepPage() {
                 </p>
               </div>
 
-              <div className="grid gap-4 lg:grid-cols-2">
-                <div className="rounded-xl border border-zinc-200 bg-white/65 p-5 dark:border-zinc-800 dark:bg-zinc-950/55">
-                  <h3 className="font-semibold">Core topics</h3>
-                  <ul className="mt-3 flex flex-col gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    {l.topics.map((t) => (
-                      <li key={t} className="flex gap-2.5">
-                        <span
-                          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"
-                          aria-hidden="true"
-                        />
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <div className="rounded-xl border border-zinc-200 bg-white/65 p-5 dark:border-zinc-800 dark:bg-zinc-950/55">
+                <h3 className="font-semibold">Core topics</h3>
+                <ul className="mt-3 grid gap-2 text-sm text-zinc-600 sm:grid-cols-2 dark:text-zinc-400">
+                  {l.topics.map((t) => (
+                    <li key={t} className="flex gap-2.5">
+                      <span
+                        className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"
+                        aria-hidden="true"
+                      />
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-                <div className="rounded-xl border border-zinc-200 bg-white/65 p-5 dark:border-zinc-800 dark:bg-zinc-950/55">
-                  <h3 className="font-semibold">Questions to practice</h3>
-                  <ol className="mt-3 flex flex-col gap-2.5 text-sm text-zinc-600 dark:text-zinc-400">
-                    {l.questions.map((q, i) => (
-                      <li key={q} className="flex gap-2.5">
-                        <span className="shrink-0 font-mono text-xs font-semibold text-indigo-500 dark:text-indigo-400">
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        {q}
-                      </li>
-                    ))}
-                  </ol>
-                </div>
+              <div>
+                <h3 className="mb-3 font-semibold">
+                  Q&amp;A bank — tap a question for the model answer
+                </h3>
+                <QABank items={banks[l.id] ?? []} />
               </div>
             </section>
           ))}
+
+          <section
+            id="system-design"
+            className="flex scroll-mt-24 flex-col gap-6 lg:scroll-mt-8"
+          >
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                System design: Gen AI &amp; Agentic AI
+              </h2>
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                Full design walkthroughs — RAG platforms, agents with real
+                permissions, serving at scale, evals-as-CI, and the autonomy
+                framework that answers half the agentic questions you&apos;ll
+                get.
+              </p>
+            </div>
+            <QABank items={systemDesignQA} />
+          </section>
 
           <section
             id="tips"
