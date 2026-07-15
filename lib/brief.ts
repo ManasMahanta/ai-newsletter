@@ -1,5 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { unstable_cache } from "next/cache";
+import { callGLM } from "@/lib/glm";
 import {
   getAgentPapers,
   getLabPosts,
@@ -10,14 +10,12 @@ import {
   getTrendingRepos,
 } from "@/lib/radar";
 
-// The daily brief: Claude reads today's feeds and writes a short synthesis —
+// The daily brief: GLM-4.5 reads today's feeds and writes a short synthesis —
 // actual editorial connective tissue, not another list. Cached for 24h;
 // the daily cron's revalidateTag("daily-brief") forces regeneration.
-// Degrades gracefully: returns null (section hidden) when no API key is set.
+// Degrades gracefully: returns null (section hidden) when ZAI_API_KEY is unset.
 
 async function generateBrief(): Promise<string | null> {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-
   const [papers, repos, models, stories, launches, labs, agentPapers] =
     await Promise.all([
       getTrendingPapers(6),
@@ -47,25 +45,17 @@ async function generateBrief(): Promise<string | null> {
   ].join("\n");
 
   try {
-    const client = new Anthropic();
-    const response = await client.messages.create({
-      model: "claude-opus-4-8",
-      max_tokens: 2000,
-      thinking: { type: "adaptive" },
-      system:
-        "You write the daily brief for Signal & Noise, an AI newsletter site. " +
+    return await callGLM(
+      "You write the daily brief for Signal & Noise, an AI newsletter site. " +
         "Given today's raw feed data, write 3-5 sentences of genuine synthesis: " +
         "connect items across feeds, name the day's real theme(s), and note what " +
         "practitioners should pay attention to and why. Refer to specific papers, " +
         "tools, or stories by name. No bullet points, no headers, no preamble — " +
         "just the prose paragraph. Plain text only, no markdown. Confident, " +
         "concrete, zero hype words like 'exciting' or 'game-changing'.",
-      messages: [{ role: "user", content: digest }],
-    });
-
-    if (response.stop_reason === "refusal") return null;
-    const text = response.content.find((b) => b.type === "text");
-    return text && "text" in text ? text.text.trim() : null;
+      digest,
+      1200,
+    );
   } catch {
     // Never let a model error break the homepage — the section just hides.
     return null;

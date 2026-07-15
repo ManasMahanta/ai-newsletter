@@ -1,5 +1,5 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import { callGLM, glmConfigured } from "@/lib/glm";
 import {
   getAgentPapers,
   getLabPosts,
@@ -13,7 +13,7 @@ import {
 
 export const maxDuration = 300;
 
-// On-demand weekly issue drafter: gathers the week's radar data, has Claude
+// On-demand weekly issue drafter: gathers the week's radar data, has GLM-4.5
 // write a full issue in this site's MDX format, and returns it as a
 // downloadable .mdx file. Save into content/issues/, edit, and push.
 // Trigger: GET /api/draft-issue?secret=<CRON_SECRET>
@@ -23,9 +23,9 @@ export async function GET(request: Request) {
   if (!secret || provided !== secret) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!glmConfigured()) {
     return NextResponse.json(
-      { error: "ANTHROPIC_API_KEY is not configured." },
+      { error: "ZAI_API_KEY is not configured." },
       { status: 503 },
     );
   }
@@ -62,36 +62,29 @@ export async function GET(request: Request) {
     ...labs.map((p) => `- [${p.source}] ${p.title} [${p.url}]`),
   ].join("\n");
 
-  try {
-    const client = new Anthropic();
-    const stream = client.messages.stream({
-      model: "claude-opus-4-8",
-      max_tokens: 16000,
-      thinking: { type: "adaptive" },
-      system:
-        "You draft weekly issues for Signal & Noise, an AI newsletter. Given a week of " +
-        "raw feed data, write a complete issue as MDX with this exact structure:\n\n" +
-        "1. YAML frontmatter: title (format: 'Issue #N: <punchy headline>' — leave N as " +
-        `a literal N for the editor), date ("${today}"), summary (one-sentence hook), ` +
-        "tags (2-3 from: models, research, tools, business, policy), featured: false.\n" +
-        "2. Sections, in order: '## TL;DR' (3 bullets), '## The Big Story' (the week's " +
-        "most consequential development, ~200 words, with 'For builders:' and 'For " +
-        "business:' angles), '## Research Radar' (2 papers, plain English, with the " +
-        "'so what'), '## Tool of the Week' (one repo/launch worth trying, why), " +
-        "'## Lightning Round' (5 one-liners with links), '## One Tip' (something " +
-        "actionable this week).\n\n" +
-        "Link to sources with markdown links using the URLs provided. Write like a " +
-        "sharp practitioner, zero hype. Where the data doesn't support a claim, " +
-        "don't make it. Output ONLY the MDX document, starting with '---'.",
-      messages: [{ role: "user", content: digest }],
-    });
+  const system =
+    "You draft weekly issues for Signal & Noise, an AI newsletter. Given a week of " +
+    "raw feed data, write a complete issue as MDX with this exact structure:\n\n" +
+    "1. YAML frontmatter: title (format: 'Issue #N: <punchy headline>' — leave N as " +
+    `a literal N for the editor), date ("${today}"), summary (one-sentence hook), ` +
+    "tags (2-3 from: models, research, tools, business, policy), featured: false.\n" +
+    "2. Sections, in order: '## TL;DR' (3 bullets), '## The Big Story' (the week's " +
+    "most consequential development, ~200 words, with 'For builders:' and 'For " +
+    "business:' angles), '## Research Radar' (2 papers, plain English, with the " +
+    "'so what'), '## Tool of the Week' (one repo/launch worth trying, why), " +
+    "'## Lightning Round' (5 one-liners with links), '## One Tip' (something " +
+    "actionable this week).\n\n" +
+    "Link to sources with markdown links using the URLs provided. Write like a " +
+    "sharp practitioner, zero hype. Where the data doesn't support a claim, " +
+    "don't make it. Output ONLY the MDX document, starting with '---'.";
 
-    const response = await stream.finalMessage();
-    if (response.stop_reason === "refusal") {
-      return NextResponse.json({ error: "Model declined the request." }, { status: 502 });
+  try {
+    const raw = await callGLM(system, digest, 8000);
+    if (!raw) {
+      return NextResponse.json({ error: "Draft generation failed." }, { status: 502 });
     }
-    const text = response.content.find((b) => b.type === "text");
-    const mdx = text && "text" in text ? text.text.trim() : "";
+    // Models sometimes wrap output in a code fence despite instructions.
+    const mdx = raw.replace(/^```(?:mdx|markdown)?\n?/, "").replace(/\n?```$/, "").trim();
     if (!mdx.startsWith("---")) {
       return NextResponse.json({ error: "Unexpected model output." }, { status: 502 });
     }
@@ -102,11 +95,7 @@ export async function GET(request: Request) {
         "Content-Disposition": `attachment; filename="draft-issue-${today}.mdx"`,
       },
     });
-  } catch (err) {
-    const message =
-      err instanceof Anthropic.APIError
-        ? `Claude API error ${err.status}: ${err.message}`
-        : "Draft generation failed.";
-    return NextResponse.json({ error: message }, { status: 502 });
+  } catch {
+    return NextResponse.json({ error: "Draft generation failed." }, { status: 502 });
   }
 }
