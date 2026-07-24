@@ -1,5 +1,6 @@
 import { getAllIssues } from "@/lib/issues";
 import { glossary, slugifyTerm } from "@/lib/glossary";
+import { caseStudies } from "@/lib/case-studies";
 import { entryQA } from "@/lib/qa/entry";
 import { midQA } from "@/lib/qa/mid";
 import { seniorQA } from "@/lib/qa/senior";
@@ -11,7 +12,7 @@ export type SearchDoc = {
   title: string;
   snippet: string;
   url: string;
-  kind: "Issue" | "Glossary" | "Interview Q&A" | "Page";
+  kind: "Issue" | "Glossary" | "Interview Q&A" | "Page" | "Case Study";
 };
 
 const snippet = (text: string, max = 160) =>
@@ -22,6 +23,7 @@ const STATIC_PAGES: SearchDoc[] = [
   { title: "Agentic AI", snippet: "Everything on AI agents: research, frameworks, tools, and discussion.", url: "/agents", kind: "Page" },
   { title: "Interview Prep", snippet: "Gen AI interview prep by level, an AI coach, a prep planner, and live open roles.", url: "/interview-prep", kind: "Page" },
   { title: "AI Glossary", snippet: "Plain-English definitions of 100+ AI and LLM terms.", url: "/glossary", kind: "Page" },
+  { title: "AI Case Studies", snippet: "Real, sourced AI and agentic AI deployments across industries, each with an honest signal-or-noise verdict.", url: "/case-studies", kind: "Page" },
   { title: "Model Tracker", snippet: "Current frontier and open-weight models, context windows, and pricing.", url: "/models", kind: "Page" },
   { title: "Issues archive", snippet: "Every past issue of Signal & Noise.", url: "/issues", kind: "Page" },
 ];
@@ -46,6 +48,15 @@ export function buildSearchIndex(): SearchDoc[] {
       snippet: snippet(term.def),
       url: `/glossary/${slugifyTerm(term.term)}`,
       kind: "Glossary",
+    });
+  }
+
+  for (const cs of caseStudies) {
+    docs.push({
+      title: `${cs.org}: ${cs.headline}`,
+      snippet: snippet(cs.summary),
+      url: `/case-studies/${cs.slug}`,
+      kind: "Case Study",
     });
   }
 

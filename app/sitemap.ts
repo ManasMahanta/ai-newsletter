@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllIssues, getAllTags } from "@/lib/issues";
 import { glossary, slugifyTerm } from "@/lib/glossary";
+import { caseStudies } from "@/lib/case-studies";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/agents",
     "/interview-prep",
     "/glossary",
+    "/case-studies",
     "/models",
     "/search",
     "/subscribe",
@@ -42,5 +44,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.5,
   }));
 
-  return [...staticPages, ...glossaryPages, ...issuePages, ...topicPages];
+  const caseStudyPages = caseStudies.map((c) => ({
+    url: `${site.url}/case-studies/${c.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...glossaryPages, ...issuePages, ...topicPages, ...caseStudyPages];
 }
