@@ -45,6 +45,13 @@ export const domains = [
   "Logistics",
   "Manufacturing",
   "Education",
+  "Government",
+  "Insurance",
+  "Energy & Utilities",
+  "Media & Journalism",
+  "Advertising & Marketing",
+  "Agriculture",
+  "Banking",
 ] as const;
 
 export const caseStudies: CaseStudy[] = [
@@ -312,6 +319,177 @@ export const caseStudies: CaseStudy[] = [
     sources: [
       { title: "The backlash against Duolingo going 'AI-first' didn't even matter — TechCrunch", url: "https://techcrunch.com/2025/08/07/the-backlash-against-duolingo-going-ai-first-didnt-even-matter/" },
       { title: "Duolingo CEO clarifies layoff plans after AI memo controversy — HR Grapevine", url: "https://www.hrgrapevine.com/us/content/article/2025-08-19-no-layoffs-for-full-time-staff-duolingo-ceo-clarifies-ai-plans-after-memo-controversy" },
+    ],
+  },
+  {
+    slug: "dutch-childcare-benefits-scandal",
+    org: "Dutch Tax Administration",
+    domain: "Government",
+    agentic: false,
+    verdict: "noise",
+    period: "2013–2021",
+    headline: "A self-learning fraud-risk algorithm toppled a government",
+    summary:
+      "The Netherlands' tax administration used a self-learning risk-scoring algorithm to flag childcare-benefit applications for fraud review. The model treated dual nationality and non-Dutch surnames as risk signals, disproportionately flagging families with a migration background.",
+    outcome:
+      "An estimated 26,000 families — many falsely — were ordered to repay €30,000 to €100,000 in benefits, plunging them into debt; parents lost homes and jobs, and at least 3,532 children were placed in foster care as a result. A parliamentary inquiry found the system violated fundamental rule-of-law principles, and the entire Rutte III cabinet resigned on 15 January 2021 over the scandal.",
+    lesson:
+      "Automated risk-scoring on already-marginalized populations doesn't need malicious intent to cause mass harm — it needs an unaudited feature (nationality) correlated with a protected characteristic, a punitive downstream process (full clawback, no graduated review), and years of nobody empowered to override the score.",
+    sources: [
+      { title: "Dutch childcare benefits scandal — Wikipedia", url: "https://en.wikipedia.org/wiki/Dutch_childcare_benefits_scandal" },
+      { title: "Dutch Families Wrongfully Accused of Tax Fraud Due to Discriminatory Algorithm — AI Incident Database", url: "https://incidentdatabase.ai/cite/101/" },
+    ],
+  },
+  {
+    slug: "unitedhealth-nh-predict-claims-denial",
+    org: "UnitedHealthcare",
+    domain: "Insurance",
+    agentic: false,
+    verdict: "noise",
+    period: "2019–ongoing",
+    headline: "A claims-denial model with a 90% reversal rate on appeal — and 0.2% of patients ever appealed",
+    summary:
+      "UnitedHealthcare's nH Predict tool (from its naviHealth subsidiary) analyzes a Medicare Advantage patient's diagnosis, age, and living situation to predict how much post-acute nursing care they \"should\" need, and was allegedly used to time cutoffs for further coverage.",
+    outcome:
+      "A federal class-action lawsuit alleges the model had a 90% error rate — the share of coverage denials overturned on internal or federal administrative appeal — and that UnitedHealth kept using it knowing only about 0.2% of denied patients would ever file an appeal. The suit alleges the AI's predictions routinely overrode treating physicians' own medically-necessary determinations. As of mid-2026 the litigation and a related court order to disclose the algorithm are ongoing; the allegations are unproven claims, not a final judgment.",
+    lesson:
+      "A 90%-overturned-on-appeal rate isn't a model with a bug — if the allegations hold, it describes a model whose errors were the business model, because the appeal rate needed to catch them was priced in at under 1%. Watch what a company measures a model against, not just what it reports.",
+    sources: [
+      { title: "UnitedHealth uses faulty AI to deny elderly patients medically necessary coverage, lawsuit claims — CBS News", url: "https://www.cbsnews.com/news/unitedhealth-lawsuit-ai-deny-claims-medicare-advantage-health-insurance-denials/" },
+      { title: "UnitedHealth Accused of Deploying Allegedly Flawed AI to Deny Medical Coverage — AI Incident Database", url: "https://incidentdatabase.ai/cite/608/" },
+    ],
+  },
+  {
+    slug: "deepmind-wind-energy-forecasting",
+    org: "Google DeepMind",
+    domain: "Energy & Utilities",
+    agentic: false,
+    verdict: "signal",
+    period: "2019–ongoing",
+    headline: "Predicting wind 36 hours out made it 20% more valuable to the grid",
+    summary:
+      "Wind power's core commercial problem isn't generating it — it's that grids pay more for electricity delivered on a promised schedule than for whatever shows up unpredictably. DeepMind trained a neural network on weather forecasts and historical turbine data across 700MW of Google's central-US wind capacity to predict output 36 hours ahead, then used those predictions to make optimal hourly delivery commitments a day in advance.",
+    outcome:
+      "Google and DeepMind reported the system boosted the value of the wind energy by roughly 20%, compared to a baseline of no time-based delivery commitments — making wind schedulable, and therefore worth more, for essentially the first time. It's a self-reported figure from Google's own fleet, not an independently audited industry benchmark.",
+    lesson:
+      "Not every AI win needs a chatbot or an agent loop — this one is a forecasting model plus an optimization layer, applied to the specific economic mechanism (schedulability) that determines what a unit of clean energy is actually worth.",
+    sources: [
+      { title: "Machine learning can boost the value of wind energy — Google DeepMind (official)", url: "https://deepmind.google/blog/machine-learning-can-boost-the-value-of-wind-energy/" },
+      { title: "DeepMind increases value of wind power by 20% — Best Practice AI", url: "https://www.bestpractice.ai/ai-case-study-best-practice/deepmind_increases_value_of_wind_power_by_20%25_by_predicting_supply_36_hours_in_advance" },
+    ],
+  },
+  {
+    slug: "cnet-ai-written-articles",
+    org: "CNET",
+    domain: "Media & Journalism",
+    agentic: false,
+    verdict: "noise",
+    period: "2022–2023",
+    headline: "77 AI-written finance articles, published quietly — and wrong in more than half",
+    summary:
+      "Starting November 2022, CNET quietly published 77 articles written by an internally built AI engine under bylines like \"CNET Money Staff,\" without clearly disclosing the AI authorship, on personal-finance explainer topics like compound interest and CD rates.",
+    outcome:
+      "After Futurism reported factual errors in one article in January 2023, CNET's editors reviewed all 77 and found incorrect information in 41 of them — including a compound-interest explainer that miscalculated a year's earnings by a factor of more than 30 ($10,300 instead of $300 on a $10,000 deposit). CNET paused the AI-writing program and issued corrections, but its editor-in-chief initially defended continuing to use the tool.",
+    lesson:
+      "Personal finance is exactly the wrong beat to let an unreviewed model publish under a human-sounding byline: the errors are concrete numbers a reader will act on, and \"AI wrote this\" wasn't disclosed clearly enough for a reader to apply extra skepticism.",
+    sources: [
+      { title: "CNET used AI to write articles. It was a journalistic disaster. — The Washington Post", url: "https://www.washingtonpost.com/media/2023/01/17/cnet-ai-articles-journalism-corrections/" },
+      { title: "Plagued with errors: A news outlet's AI tool backfires — CNN Business", url: "https://www.cnn.com/2023/01/25/tech/cnet-ai-tool-news-stories" },
+    ],
+  },
+  {
+    slug: "mata-v-avianca-fake-citations",
+    org: "Levidow, Levidow & Oberman (law firm)",
+    domain: "Legal Services",
+    agentic: false,
+    verdict: "noise",
+    period: "2023",
+    headline: "A lawyer used ChatGPT for research. It invented six court cases. He filed them anyway.",
+    summary:
+      "In a routine personal-injury suit against Avianca, attorney Steven Schwartz used ChatGPT to find supporting case law for a brief. It generated six citations complete with plausible case names and quoted opinions — none of which existed.",
+    outcome:
+      "When opposing counsel and the court couldn't locate the cases, the lawyers didn't withdraw the brief — they submitted further filings insisting the cases were real, including AI-generated fake \"copies\" of the fictional opinions. Judge P. Kevin Castel sanctioned Schwartz, a colleague, and their firm $5,000 for violating Rule 11's duty to verify citations, in what became the watershed case for AI hallucination in legal practice.",
+    lesson:
+      "The hallucination wasn't the expensive mistake — a fabricated citation caught before filing costs nothing. The expensive mistake was trusting the tool's confidence over a five-minute manual check, twice, even after being directly challenged on it.",
+    sources: [
+      { title: "Mata v. Avianca, Inc. — Wikipedia", url: "https://en.wikipedia.org/wiki/Mata_v._Avianca,_Inc." },
+      { title: "Update on the ChatGPT Case: Counsel Who Submitted Fake Cases Are Sanctioned — Seyfarth Shaw LLP", url: "https://www.seyfarth.com/news-insights/update-on-the-chatgpt-case-counsel-who-submitted-fake-cases-are-sanctioned.html" },
+    ],
+  },
+  {
+    slug: "amazon-warehouse-robotics-injuries",
+    org: "Amazon",
+    domain: "Retail & Supply Chain",
+    agentic: false,
+    verdict: "mixed",
+    period: "2019–ongoing",
+    headline: "Robots made picking faster. Faster made the warehouse floor more dangerous.",
+    summary:
+      "Amazon's fulfillment centers pair AI-driven inventory robots (the Kiva/Amazon Robotics system) with human pickers and packers working against algorithmically-set productivity rates, aiming for speed and accuracy no manual-only warehouse could match.",
+    outcome:
+      "Multiple independent investigations — Reveal, the Strategic Organizing Center, and the Washington Post — found Amazon's robotic facilities had a serious-injury rate 54% higher than its non-robotic ones in 2019 (7.9 vs. roughly 5.1 per 100 workers), and more than double the warehousing-industry average. A December 2024 U.S. Senate investigation concluded Amazon knowingly avoided safety fixes that would have slowed throughput; the U.S. Attorney's Office (SDNY) is separately investigating whether Amazon concealed its true injury rates.",
+    lesson:
+      "The robots weren't the injury cause on their own — the algorithmically-optimized pace they enabled was. \"AI made the process faster\" is not the same claim as \"AI made the process better for the humans still in the loop,\" and this is the case study that shows the gap between the two most starkly.",
+    sources: [
+      { title: "Amazon's Approach to Robotics Is Seriously Injuring Warehouse Workers — OnLabor", url: "https://onlabor.org/amazons-approach-to-robotics-is-seriously-injuring-warehouse-workers/" },
+      { title: "Amazon warehouse robots 'increase staff injuries' — BBC News", url: "https://feeds.bbci.co.uk/news/technology-54355803" },
+    ],
+  },
+  {
+    slug: "bank-of-america-erica",
+    org: "Bank of America",
+    domain: "Banking",
+    agentic: false,
+    verdict: "signal",
+    period: "2018–ongoing",
+    headline: "3 billion conversations in, Erica is still just a virtual assistant — and that's the point",
+    summary:
+      "Bank of America's Erica handles everyday banking questions and proactive nudges (unusual charges, upcoming bills, subscription creep) inside the bank's app, scoped deliberately to informational and low-risk transactional tasks rather than autonomous account actions.",
+    outcome:
+      "Bank of America reports Erica passed 3 billion client interactions by mid-2025, averaging 58 million a month across roughly 50 million users, with 98% of clients finding what they need and an average interaction lasting 48 seconds. Roughly half of interactions are proactive — Erica surfacing something before the client asks. An internal version for employees is used by over 90% of BofA staff and has cut IT help-desk calls by half.",
+    lesson:
+      "The banking-AI deployment with the longest track record and the least controversy is also the least ambitious one on paper: no autonomous transfers, no agentic decision-making, just fast, well-scoped answers — a reminder that durability and audacity aren't the same axis.",
+    sources: [
+      { title: "A Decade of AI Innovation: BofA's Virtual Assistant Erica Surpasses 3 Billion Client Interactions (official)", url: "https://newsroom.bankofamerica.com/content/newsroom/press-releases/2025/08/a-decade-of-ai-innovation--bofa-s-virtual-assistant-erica-surpas.html" },
+      { title: "How Bank of America's Erica raised the stakes for virtual assistants — CIO Dive", url: "https://www.ciodive.com/news/bank-of-america-erica-virtual-assistants/758901/" },
+    ],
+  },
+  {
+    slug: "coca-cola-ai-holiday-ad",
+    org: "Coca-Cola",
+    domain: "Advertising & Marketing",
+    agentic: false,
+    verdict: "noise",
+    period: "2024–2025",
+    headline: "Two years running, the AI Christmas ad became the story instead of Christmas",
+    summary:
+      "Coca-Cola replaced its famously nostalgic \"Holidays Are Coming\" trucks campaign with a generative-AI-produced version — AI-rendered trucks, snow, and crowds — in both the 2024 and 2025 holiday seasons, aiming for the same emotional beats at presumably lower production cost and faster turnaround.",
+    outcome:
+      "Both versions were widely mocked online as \"soulless,\" \"uncanny,\" and \"AI slop,\" with the backlash itself becoming bigger news coverage than the ad. Coca-Cola released the second AI ad in 2025 anyway, with executives saying the approach had improved — drawing a second round of the same criticism rather than resolution.",
+    lesson:
+      "For a brand whose entire equity is nostalgia and craft (Coca-Cola effectively invented the modern visual Santa Claus), the uncanny-valley signal that says \"machine-made\" is a direct hit to the product being sold, regardless of any production-cost savings on the other side of the ledger.",
+    sources: [
+      { title: "Coca-Cola causes controversy with AI-generated ad — NBC News", url: "https://www.nbcnews.com/tech/innovation/coca-cola-causes-controversy-ai-made-ad-rcna180665" },
+      { title: "Coca-Cola Sparks Backlash With AI-Generated Christmas Ad, Again — Forbes", url: "https://www.forbes.com/sites/danidiplacido/2025/11/04/coca-cola-sparks-backlash-with-ai-generated-christmas-ad-again/" },
+    ],
+  },
+  {
+    slug: "john-deere-see-and-spray",
+    org: "John Deere",
+    domain: "Agriculture",
+    agentic: false,
+    verdict: "signal",
+    period: "2021–ongoing",
+    headline: "Cameras that tell a weed from a crop cut herbicide use by half, at millions of acres of scale",
+    summary:
+      "John Deere's See & Spray uses boom-mounted cameras and a real-time computer-vision model to distinguish weeds from crop plants as a sprayer passes over a field, firing herbicide only at the individual weed rather than blanket-spraying the whole row.",
+    outcome:
+      "Deere reports 2024 customers saved an average 59% on herbicide across corn, soy, and cotton (an independent Iowa State University study measured 76% product savings and $15.70/acre economically). In 2025, adoption scaled to more than 5 million acres, with customers reducing non-residual herbicide use by nearly 50% on average — saving roughly 31 million gallons of herbicide mix for the season.",
+    lesson:
+      "A narrow, well-defined computer-vision task (weed vs. not-weed, in real time, from a known camera angle) with a direct, measurable input-cost payoff is the profile that tends to survive contact with a real growing season, unlike broader \"AI for farming\" pitches with fuzzier metrics.",
+    sources: [
+      { title: "See & Spray Herbicide Savings — John Deere (official)", url: "https://www.deere.com/en/news/all-news/see-spray-herbicide-savings/" },
+      { title: "John Deere's See & Spray saves farmers more than 31M gallons of herbicide mix in 2025 — AgTech Navigator", url: "https://www.agtechnavigator.com/Article/2025/11/10/john-deere-uses-ai-to-slash-farmers-input-costs/" },
     ],
   },
 ];

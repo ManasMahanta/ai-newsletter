@@ -23,6 +23,7 @@ export async function GET(request: Request) {
   revalidatePath("/");
   revalidatePath("/radar");
   revalidatePath("/agents");
+  revalidatePath("/case-studies");
   revalidatePath("/interview-prep");
   revalidateTag("daily-brief", "max");
   revalidateTag("weekly-quiz", "max");
