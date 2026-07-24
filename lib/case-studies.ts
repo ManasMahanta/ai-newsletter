@@ -52,6 +52,10 @@ export const domains = [
   "Advertising & Marketing",
   "Agriculture",
   "Banking",
+  "Telecom",
+  "Aviation",
+  "Automotive & Mobility",
+  "Hospitality",
 ] as const;
 
 export const caseStudies: CaseStudy[] = [
@@ -490,6 +494,82 @@ export const caseStudies: CaseStudy[] = [
     sources: [
       { title: "See & Spray Herbicide Savings — John Deere (official)", url: "https://www.deere.com/en/news/all-news/see-spray-herbicide-savings/" },
       { title: "John Deere's See & Spray saves farmers more than 31M gallons of herbicide mix in 2025 — AgTech Navigator", url: "https://www.agtechnavigator.com/Article/2025/11/10/john-deere-uses-ai-to-slash-farmers-input-costs/" },
+    ],
+  },
+  {
+    slug: "t-mobile-intentcx",
+    org: "T-Mobile × OpenAI",
+    domain: "Telecom",
+    agentic: true,
+    verdict: "mixed",
+    period: "2025–ongoing",
+    headline: "A bold agentic-AI goal — 75% fewer service calls — with no independent results yet",
+    summary:
+      "T-Mobile and OpenAI are building IntentCX, an agentic platform meant to read a customer's intent and sentiment in real time and take permissioned actions on their behalf — not just answer questions, but resolve the underlying account issue directly, integrated into T-Mobile's core operational systems.",
+    outcome:
+      "T-Mobile has publicly stated an internal goal of cutting customer service calls by 75% using IntentCX. As of this writing, public reporting covers the platform's design and ambition — an intent-detection layer feeding both live agents and autonomous actions — but no independently verified performance numbers (resolution rates, actual call-volume reduction, customer satisfaction) have been published.",
+    lesson:
+      "A specific, bold target announced alongside a big-name AI partner is a press cycle, not a result — the honest move is to note the goal, flag that outcome data doesn't exist yet, and revisit once it does, rather than treat the announcement itself as evidence.",
+    sources: [
+      { title: "T-Mobile, OpenAI to equip customer care agents with AI platform — CX Dive", url: "https://www.customerexperiencedive.com/news/t-mobile-openai-customer-service-agents-generative-ai-intentcx/727572/" },
+      { title: "Transforming Telecom Operations Through Agentic And Generative AI — Forbes", url: "https://www.forbes.com/sites/moorinsights/2025/02/24/transforming-telecom-operations-through-agentic-and-generative-ai/" },
+    ],
+  },
+  {
+    slug: "easyjet-predictive-maintenance",
+    org: "easyJet",
+    domain: "Aviation",
+    agentic: false,
+    verdict: "signal",
+    period: "2015–ongoing",
+    headline: "A decade of predictive-maintenance AI, quietly preventing delays no one notices",
+    summary:
+      "Since a 2015 study with Airbus proved fault patterns were predictable from flight and maintenance data ahead of existing cockpit alerts, easyJet has built out a predictive-maintenance system (now 22 live models via Airbus's Skywise platform) that flags failing parts before they cause a delay or cancellation.",
+    outcome:
+      "Between January 2019 and September 2025, easyJet reports the system helped avoid 171 major delays, 662 minor delays, and 1,343 cancellations. Despite a growing fleet over that period, easyJet has maintained aircraft availability at 98.63% and technical dispatch reliability at 99.57%.",
+    lesson:
+      "This is the least visible kind of AI win — nobody notices a delay that didn't happen — and it's also one of the most durable: a decade of steady, unglamorous model deployment against a single well-defined metric (part failure before it grounds a plane), with no viral moment in either direction.",
+    sources: [
+      { title: "easyJet outlines reliability gains as predictive strategy accelerates — Aviation Business News (PAM Dublin 2025)", url: "https://www.aviationbusinessnews.com/mro/latest-news-mro/pam-dublin-2025-easyjet-outlines-reliability-gains-as-predictive-strategy-accelerates/" },
+      { title: "EasyJet Reaps Big Gains From Early Predictive Maintenance Efforts — Aviation Week", url: "https://aviationweek.com/mro/easyjet-reaps-big-gains-early-predictive-maintenance-efforts" },
+    ],
+  },
+  {
+    slug: "gm-cruise-robotaxi-permit-revoked",
+    org: "GM Cruise",
+    domain: "Automotive & Mobility",
+    agentic: false,
+    verdict: "noise",
+    period: "2023",
+    headline: "A robotaxi dragged a pedestrian 20 feet. The company's video didn't show that part.",
+    summary:
+      "A Cruise robotaxi in San Francisco struck a pedestrian who had already been hit by a separate human-driven car and thrown into its path, then — while executing an automated pull-over maneuver — dragged her roughly 20 feet at up to 7 mph before stopping.",
+    outcome:
+      "In a meeting with California's DMV the next day, Cruise showed video ending at the vehicle's initial hard-braking stop, without disclosing that it had then dragged the pedestrian during the pullover. When the full footage surfaced, the DMV found Cruise had misrepresented its technology's safety and immediately suspended its permit to test and deploy driverless vehicles in California — revoked outright on October 24, 2023 — and Cruise recalled 950 robotaxis.",
+    lesson:
+      "The underlying edge case (a pedestrian already down, out of a normal sensor expectation) is a genuinely hard autonomy problem — but the regulator didn't revoke the permit over the crash itself, it revoked it over the incomplete video. In a safety-critical domain, what you don't disclose can cost you the entire license, independent of the technical failure.",
+    sources: [
+      { title: "California DMV immediately suspends Cruise's robotaxi permit — TechCrunch", url: "https://techcrunch.com/2023/10/24/dmv-immediately-suspends-cruises-robotaxi-permit-in-california/" },
+      { title: "California suspends Cruise robotaxis for misrepresenting safety — Smart Cities Dive", url: "https://www.smartcitiesdive.com/news/california-accuses-general-motors-cruise-misrepresenting-safety-information-suspends-permit/697718/" },
+    ],
+  },
+  {
+    slug: "hilton-connie-concierge",
+    org: "Hilton × IBM Watson",
+    domain: "Hospitality",
+    agentic: false,
+    verdict: "noise",
+    period: "2016–2018",
+    headline: "\"The world's first Watson-enabled hotel concierge\" — a single lobby robot that quietly vanished",
+    summary:
+      "In March 2016, Hilton and IBM launched Connie, a Watson-powered robot concierge piloted at exactly one property — the Hilton McLean in Virginia — positioned in the press as a glimpse of AI-run hospitality, answering guest questions about local attractions, dining, and hotel amenities.",
+    outcome:
+      "The launch generated a large wave of press coverage (IBM, Hilton, Fox News, InformationWeek all covered the debut). Coverage of any expansion beyond the single pilot site never materialized, and Connie was later quietly replaced at that same hotel by Ava, a mobile telepresence unit — with no follow-up case study, rollout announcement, or stated results ever published by either company.",
+    lesson:
+      "Watch for the shape of this pattern, not just this example: a splashy single-location pilot generates a launch-day press cycle, then the story simply stops, with no \"here's what we learned\" or \"here's where it is now.\" Silence after a launch is itself a data point — it usually means the pilot didn't clear whatever bar would have made expanding it worth announcing.",
+    sources: [
+      { title: "Hilton and IBM Pilot \"Connie,\" The World's First Watson-Enabled Hotel Concierge — IBM Newsroom (official)", url: "https://uk.newsroom.ibm.com/2016-Mar-09-Hilton-and-IBM-Pilot-Connie-The-Worlds-First-Watson-Enabled-Hotel-Concierge" },
+      { title: "Hilton + IBM Watson — Medium retrospective", url: "https://medium.com/@sweetmantech/hilton-ibm-watson-7c5f5f1a611" },
     ],
   },
 ];

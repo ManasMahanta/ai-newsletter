@@ -6,6 +6,8 @@ import { Parallax, Reveal, SceneLabel } from "@/components/cinematic/Motion";
 import RadarCard, { StatPill } from "@/components/radar/RadarCard";
 import Highlights from "@/components/radar/Highlights";
 import DailyBrief from "@/components/radar/DailyBrief";
+import VerdictBadge from "@/components/VerdictBadge";
+import { caseStudies, getCaseStudy } from "@/lib/case-studies";
 import {
   LabsFeed,
   LaunchesFeed,
@@ -21,6 +23,14 @@ import {
   getAgentRepos,
 } from "@/lib/radar";
 import { site } from "@/lib/site";
+
+// One of each verdict, so the homepage teaser shows the range honestly
+// rather than only the wins.
+const CASE_STUDY_TEASERS = [
+  "jpmorgan-coin-contract-review",
+  "klarna-ai-customer-service",
+  "gm-cruise-robotaxi-permit-revoked",
+];
 
 async function AgenticTeaser() {
   const [papers, repos] = await Promise.all([
@@ -232,8 +242,54 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Scene 07 — Case Studies teaser: editorial, not a live feed */}
+      <section>
+        <Reveal>
+          <div className="flex items-baseline justify-between gap-4">
+            <div>
+              <SceneLabel>07 · The evidence</SceneLabel>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight">
+                AI Case Studies
+              </h2>
+            </div>
+            <Link
+              href="/case-studies"
+              className="shrink-0 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+            >
+              See all {caseStudies.length} →
+            </Link>
+          </div>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            Real companies, real deployments — each one gets an honest
+            verdict, plus a live incident log that grows daily.
+          </p>
+        </Reveal>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          {CASE_STUDY_TEASERS.map((slug) => {
+            const cs = getCaseStudy(slug);
+            if (!cs) return null;
+            return (
+              <Link
+                key={cs.slug}
+                href={`/case-studies/${cs.slug}`}
+                className="flex flex-col gap-2.5 rounded-xl border border-zinc-200 bg-white/65 p-5 transition hover:border-indigo-400 dark:border-zinc-800 dark:bg-zinc-950/55 dark:hover:border-indigo-500"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    {cs.domain}
+                  </span>
+                  <VerdictBadge verdict={cs.verdict} />
+                </div>
+                <h3 className="text-sm font-semibold leading-snug">{cs.headline}</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">{cs.org}</p>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
       <LiveScene
-        scene="07 · The models"
+        scene="08 · The models"
         title="Hot models"
         blurb="What's trending on the Hugging Face Hub right now."
         radarAnchor="models"
@@ -242,7 +298,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="08 · The launchpad"
+        scene="09 · The launchpad"
         title="Fresh launches"
         blurb="AI projects shown on Hacker News in the past two weeks."
         radarAnchor="launches"
@@ -251,7 +307,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="09 · The conversation"
+        scene="10 · The conversation"
         title="What everyone's arguing about"
         blurb="Top AI stories on Hacker News from the past week."
         radarAnchor="conversation"
@@ -260,7 +316,7 @@ export default function HomePage() {
       </LiveScene>
 
       <LiveScene
-        scene="10 · The labs"
+        scene="11 · The labs"
         title="Lab notes"
         blurb="Fresh posts from OpenAI, Google DeepMind, Google AI, and Hugging Face."
         radarAnchor="labs"
@@ -268,11 +324,11 @@ export default function HomePage() {
         <LabsFeed limit={4} />
       </LiveScene>
 
-      {/* Scene 11 — Lock On: the invitation */}
+      {/* Scene 12 — Lock On: the invitation */}
       <section className="relative overflow-hidden rounded-2xl bg-zinc-100 p-5 sm:p-8 dark:bg-zinc-900">
         <div className="glow-orb -top-20 right-0 h-56 w-56 bg-indigo-500/20 dark:bg-indigo-500/15" />
         <Reveal className="relative">
-          <SceneLabel>11 · Lock on</SceneLabel>
+          <SceneLabel>12 · Lock on</SceneLabel>
           <h2 className="mt-3 text-2xl font-bold tracking-tight">
             The signal, delivered — 5 minutes a week
           </h2>
